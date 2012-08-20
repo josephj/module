@@ -10,6 +10,7 @@ YUI.add("_bar", function (Y) {
         on: {
             viewload: function () {
                 this.get("node").setStyle("background", "yellow");
+                alert(this.broadcast);
                 this.broadcast("say-hello", "hello");
             },
             message: function () {

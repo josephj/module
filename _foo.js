@@ -10,6 +10,7 @@ YUI.add("_foo", function (Y) {
         on: {
             viewload: function () {
                 this.get("node").setStyle("background", "pink");
+                alert(this.broadcast);
                 this.broadcast("change-background", "red");
             },
             message: function () {

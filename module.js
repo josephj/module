@@ -15,35 +15,11 @@ YUI.add("module", function (Y) {
         //===========================
         // Private Methods
         //===========================
-        _addListener,
         _log,
         _match;
 
     // Create the manager instance.
     _manager = new Y.ModuleManager();
-
-    /**
-     * Let a module listen for a specific message.
-     *
-     * @method _addListener
-     * @private
-     * @param id      {String} ID of the module which wants to listen.
-     * @param label   {String} Target message label name.
-     * @param handler {String} Target message label name.
-     * @return        {String} listener ID for future use (remove, update...)
-     */
-    _addListener = function (id, label, handler) {
-        _log("_addListener('" + id + "', '" + label + "') is executed.");
-        var mapId;
-
-        handler = handler || function () {};
-        mapId = Y.guid();
-        if (!Lang.isUndefined(_listeners[id])) {
-            _listeners[id] = {};
-        }
-        _listeners[id][label] = handler;
-        return mapId;
-    };
 
     /**
      * A convenient alias method for Y.log(<msg>, "info", "Y.Module");
@@ -55,69 +31,6 @@ YUI.add("module", function (Y) {
         type = type || "info";
         module = module || MODULE_ID;
         Y.log(msg, type, module);
-    };
-
-    /**
-     * Match event and modules which subscribes the event.
-     *
-     * @method _match
-     * @private
-     * @param name {String} The message label name.
-     * @param id   {String} The broadcasting module ID.
-     * @param data {Object} The data which the broadcasting module
-     *                      shares with the subscribers.
-     */
-    _match = function (name, id, data) {
-        _log("_match('" + name + "', '" + id + "') is executed.");
-        var modules = [], // The influenced modules.
-            i,
-            listener, // The shortcut for iteration.
-            key;      // The message label name.
-
-        // Check the origin if it's defined.
-        if (name.indexOf(":") !== -1) {
-            if (id !== name.split(":")[0]) {
-                _log("match('" + name + "') the id you assigned " +
-                     "('" + name.split(":")[0] + ") is not identical with " +
-                     "current module id '" + id + "'. Stop execution.", "warn");
-                return;
-            }
-        }
-
-        // Find out modules which subscribe / listen for this message.
-        name = name.split(":")[1];
-        for (i in _listeners) {
-            if (_listeners.hasOwnProperty(i)) {
-                listener = _listeners[i];
-                if (!listener.name && !listener[id + ":" + name]) {
-                    continue;
-                }
-
-                // Get the message label name.
-                if (listener[id + ":" + name]) {
-                    key  = id + ":" + name;
-                } else {
-                    key = name;
-                }
-
-                // Prevent user handlers' error.
-                try {
-                    listener[key](name, id, data);
-                    if (!Lang.isUndefined(_modules[i].onmessage)) {
-                        _modules[i].onmessage(name, id, data);
-                    }
-                    modules.push(i);
-                }
-                catch (e) {
-                    _log("_match('" + name + "', '" + id + "') fails - " +
-                         "Error occurs in " + i + " module's onmessage method. " +
-                         "The error message is '" + e.message + "'", "error");
-                }
-            }
-        }
-        _log("_match('" + name + "', '" + id + "', '<data>') is executed " +
-             "successfully! There are " + modules.length + " modules being " +
-             "influenced: '#" + modules.join(", #") + "'");
     };
 
     /**
@@ -254,23 +167,16 @@ YUI.add("module", function (Y) {
          *                       You should use verb for first word and use hyphen.
          * @param data {Mixed}   The data you want transmit to module which subscribe
          *                       this message.
-         * @param target {Array} The target modules you want make sure your message
-         *                       being transmitted even it doesn't exist.
          */
-        broadcast: function (name, data) {
+        broadcast: function (name, data, callback) {
+                       alert("broadcast");
             var that = this,
                 id = that.get("id");
-            _log("broadcast('" + name + "') for " + id + " is executed.");
-            if (name.indexOf(":") !== -1) {
-                if (name.split(":")[0] !== id) {
-                    _log("broadcast('" + name + "') the id you assigned" +
-                         "is not identical with current module id.", "warn");
-                    return false;
-                }
-            } else {
-                name = id + ":" + name;
-            }
-            _match(name, id, data);
+
+            data = data || {};
+            callback = callback || function () {};
+            alert(_manager.addBroadcast);
+            _manager.addBroadcaster(id, name, data, callback);
         },
         /**
          * Destroy the module instance.
@@ -296,20 +202,9 @@ YUI.add("module", function (Y) {
          *                            message name, id, data, callback
          */
         listen: function (name, callback) {
+            var that = this;
             _log("listen() - " + name + " by #" + this.get("id"));
-            var that = this,
-                id = that.get("id"),
-                listeners;
-            listeners = _manager.get("listeners");
-
-            if (listeners[id]) {
-                listeners = listeners[that.get("id")];
-            } else {
-                listeners[id] = {};
-                listeners = listeners[id];
-            }
-            listeners[name] = callback;
-            // Deubg - Y.log(_manager.get("listeners"), "debug");
+            _manager.addListener(that.get("id"), name, callback);
         },
         /**
          * A convenient alias method for Y.log(<msg>, "info", "<id>");
@@ -341,6 +236,7 @@ YUI.add("module", function (Y) {
             // Execute module initializer.
             init = config.init || function () {};
             that._register();
+
             //==================
             //  Publish events
             //==================
@@ -353,7 +249,6 @@ YUI.add("module", function (Y) {
              * @public
              */
             that.publish("message", {emitFacade: true});
-
             /**
              * Use contentready to check if module view is loaded.
              * You can only get node attribute after this event.
@@ -366,4 +261,5 @@ YUI.add("module", function (Y) {
         }
     });
     Y.Module = Module;
+
 }, "0.0.1", {requires: ["base", "node-base", "event-base", "module-manager"]});
