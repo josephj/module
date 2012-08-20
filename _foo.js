@@ -1,18 +1,20 @@
 YUI.add("_foo", function (Y) {
 
-    var _node;
-
     var module = new Y.Module({
-        "selector": "#foo",
-        "events": {
-            "click": {
+        id: "foo",
+        init: function () {
+            this.listen("say-hello", function (id, msg) {
+                this.log(id + " says " + msg);
+            });
+        },
+        on: {
+            viewload: function () {
+                this.get("node").setStyle("background", "pink");
+                this.broadcast("change-background", "red");
+            },
+            message: function () {
             }
         }
     });
 
-    module.on("viewload", function (e) {
-        var that = this;
-        _node = self.get("node");
-    });
-
-});
+}, "0.0.1", {requires: ["module", "node-style"]});
