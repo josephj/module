@@ -1,8 +1,6 @@
 YUI.add("module", function (Y) {
 
-    var _modules   = [], // The registered modules.
-        _listeners = {}, // The listening message from modules.
-        _timers    = {}, // Timers checking if contentready events are executed.
+    var _timers    = {}, // Timers checking if contentready events are executed.
         _manager   = null,
         //===========================
         // Shortcuts
@@ -15,8 +13,7 @@ YUI.add("module", function (Y) {
         //===========================
         // Private Methods
         //===========================
-        _log,
-        _match;
+        _log;
 
     // Create the manager instance.
     _manager = new Y.ModuleManager();
@@ -137,6 +134,9 @@ YUI.add("module", function (Y) {
     Y.extend(Module, Y.Base, {
         /**
          * Register this module instance to manager.
+         *
+         * @method _register
+         * @private
          */
         _register: function () {
             var that = this;
@@ -169,13 +169,11 @@ YUI.add("module", function (Y) {
          *                       this message.
          */
         broadcast: function (name, data, callback) {
-                       alert("broadcast");
             var that = this,
                 id = that.get("id");
 
             data = data || {};
             callback = callback || function () {};
-            alert(_manager.addBroadcast);
             _manager.addBroadcaster(id, name, data, callback);
         },
         /**
@@ -231,7 +229,6 @@ YUI.add("module", function (Y) {
                 init;
 
             config = config || {};
-            config.on = config.on || {};
 
             // Execute module initializer.
             init = config.init || function () {};
@@ -260,6 +257,7 @@ YUI.add("module", function (Y) {
             that.publish("viewload", {emitFacade: true});
         }
     });
+
     Y.Module = Module;
 
 }, "0.0.1", {requires: ["base", "node-base", "event-base", "module-manager"]});

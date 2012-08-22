@@ -17,14 +17,22 @@
     width: 300px;
     height: 300px;
     padding: 10px;
+    float: left;
 }
 </style>
 </head>
-<body>
-    <div id="foo" class="mod">#foo</div>
-    <div id="bar" class="mod">#bar</div>
+<body class="yui3-skin-sam">
+    <div id="foo" class="mod">
+        <div class="hd">#foo</div>
+        <div class="bd"><ul></ul></div>
+    </div>
+    <div id="bar" class="mod">
+        <div class="hd">#bar</div>
+        <div class="bd"><ul></ul></div>
+    </div>
     <script>
-    YUI().use("_foo", "_bar", "module-manager", function (Y) {
+    YUI().use("console", "_foo", "_bar", "module-manager", function (Y) {
+        (new Y.Console()).render();
         var manager = new Y.ModuleManager();
         manager.startAll();
     });

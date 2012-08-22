@@ -1,19 +1,24 @@
 YUI.add("_foo", function (Y) {
 
-    var module = new Y.Module({
+    var _node,
+        _api;
+
+    _api = new Y.Module({
         id: "foo",
         init: function () {
-            this.listen("say-hello", function (id, msg) {
-                this.log(id + " says " + msg);
+            var that = this;
+            that.listen("say-hello", function (id, msg) {
+                // that.log(id + " says " + msg);
             });
         },
         on: {
             viewload: function () {
-                this.get("node").setStyle("background", "pink");
-                alert(this.broadcast);
+                _node = this.get("node");
+                _node.setStyle("background", "pink");
                 this.broadcast("change-background", "red");
             },
-            message: function () {
+            message: function (o) {
+                _node.one("ul").append("<li>Received '" + o.name + "' message from '" + o.id + "'.</li>");
             }
         }
     });

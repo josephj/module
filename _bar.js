@@ -3,15 +3,15 @@ YUI.add("_bar", function (Y) {
     var module = new Y.Module({
         id: "bar",
         init: function () {
-            this.listen("change-background", function (o) {
-                this.get("node").setStyle("background", "red");
+            var that = this;
+            that.broadcast("say-hello", "hello");
+            that.listen("change-background", function (name, id, data) {
+                that.get("node").setStyle("background", "red");
             });
         },
         on: {
             viewload: function () {
                 this.get("node").setStyle("background", "yellow");
-                alert(this.broadcast);
-                this.broadcast("say-hello", "hello");
             },
             message: function () {
             }
