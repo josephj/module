@@ -1,3 +1,4 @@
+/*global YUI */
 YUI.add("module", function (Y) {
 
     var _timers    = {}, // Timers checking if contentready events are executed.
@@ -151,12 +152,13 @@ YUI.add("module", function (Y) {
         _handleReady: function () {
             _log("_handleReady() is executed.");
             var that = this,
-                id;
+                id,
+                node;
             node = Y.one("#" + that.get("id"));
             that._set("node", node);
             that.fire("viewload");
             that._set("ready", true);
-            that._set("state", ready);
+            that._set("state", "ready");
         },
         /**
          * Module broadcast method.
@@ -184,7 +186,8 @@ YUI.add("module", function (Y) {
          * @param needRemove {Boolean} Set false if you want to remove this module
          */
         destructor: function (needRemove) {
-            needRemove = (needRemove) ? needRemove : false;
+            var that = this;
+            needRemove = needRemove || false;
             if (needRemove) {
                 that.get("node").remove();
             }

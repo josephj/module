@@ -5,6 +5,7 @@
  *
  * @module module-manager
  */
+/*global YUI */
 YUI.add("module-manager", function (Y) {
 
     var _instance,      // For singleton.
@@ -29,6 +30,7 @@ YUI.add("module-manager", function (Y) {
      */
     _handleModuleReady = function (manager) {
         var module = this, // The module instance.
+            node,
             id;
 
         _log("#" + module.get("id") + " is ready.");
@@ -53,9 +55,10 @@ YUI.add("module-manager", function (Y) {
     _handleReadyChange = function () {
         _log("_handleReadyChange() is executed.");
         var that = this,
-            o;
-        while (o = _queue.shift()) {
+            o = _queue.shift();
+        while (o) {
             that._match(o.name, o.id, o.data, o.callback);
+            o = _queue.shift();
         }
     };
     /**
@@ -308,7 +311,7 @@ YUI.add("module-manager", function (Y) {
          */
         startAll: function () {
             _log("startAll() is executed.");
-            var that = this;
+            var that = this,
                 modules = that.get("modules");
 
             Y.each(modules, function (module) {
