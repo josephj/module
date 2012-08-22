@@ -140,25 +140,9 @@ YUI.add("module", function (Y) {
          * @private
          */
         _register: function () {
+            _log("_register() is executer.");
             var that = this;
             _manager.register(that);
-        },
-        /**
-         * Handles contentready event of this module
-         *
-         * @method _handleReady
-         * @private
-         */
-        _handleReady: function () {
-            _log("_handleReady() is executed.");
-            var that = this,
-                id,
-                node;
-            node = Y.one("#" + that.get("id"));
-            that._set("node", node);
-            that.fire("viewload");
-            that._set("ready", true);
-            that._set("state", "ready");
         },
         /**
          * Module broadcast method.
@@ -171,6 +155,7 @@ YUI.add("module", function (Y) {
          *                       this message.
          */
         broadcast: function (name, data, callback) {
+            _log("broadcast() is executed.");
             var that = this,
                 id = that.get("id");
 
@@ -186,6 +171,7 @@ YUI.add("module", function (Y) {
          * @param needRemove {Boolean} Set false if you want to remove this module
          */
         destructor: function (needRemove) {
+            _log("destructor() is executed.");
             var that = this;
             needRemove = needRemove || false;
             if (needRemove) {

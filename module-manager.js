@@ -180,20 +180,35 @@ YUI.add("module-manager", function (Y) {
                         key = name;
                     }
 
+                    // TODO - Module may not ready at this moment.
                     // Prevent user handlers' error.
-                    try {
-                        listener[key](name, id, data);
-                        modules[i].fire("message", {
-                            name: name,
-                            id: id,
-                            data: data
-                        });
-                        cached.push(i);
-                    } catch (e) {
-                        _log("_match('" + name + "', '" + id + "') fails - " +
-                             "Error occurs in " + i + " module's onmessage method. " +
-                             "The error message is '" + e.message + "'", "error");
-                    }
+                    (function () {
+                        var module = modules[i];
+                        module.retryCount = module.retryCount || 0;
+                        module.retryCount += 1;
+                        if (!module.get("ready")) {
+                            if (retryCount > 40) {
+                                _log("Module " + i + " fails retry.", "warn");
+                                return;
+                            }
+                            _log("Module " + i + " is not ready, try again.", "warn");
+                            Y.later(100, null, arguments.callee);
+                            return;
+                        }
+                        try {
+                            listener[key](name, id, data);
+                            modules[i].fire("message", {
+                                name: name,
+                                id: id,
+                                data: data
+                            });
+                            cached.push(i);
+                        } catch (e) {
+                            _log("_match('" + name + "', '" + id + "') fails - " +
+                                 "Error occurs in " + i + " module's onmessage method. " +
+                                 "The error message is '" + e.message + "'", "error");
+                        }
+                    })();
                 }
             }
             /*
