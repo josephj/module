@@ -9,6 +9,7 @@
 <script src="http://yui.yahooapis.com/3.6.0/build/yui/yui-min.js"></script>
 <script src="module.js"></script>
 <script src="module-manager.js"></script>
+<script src="module-intl.js"></script>
 <script src="_foo.js"></script>
 <script src="_bar.js"></script>
 <style type="text/css">
@@ -34,7 +35,24 @@
     </div>
 
     <script>
-    YUI().use("_foo", "_bar", function (Y) {
+    YUI({
+        "filter": "raw",
+        "async": true,
+        "langs": "zh-TW,en-US",
+        "groups": {
+            "user": {
+                "filter": "raw",
+                "base": "http://josephj.com/lab/2012/module/",
+                "langs": ["en-US", "zh-TW"],
+                "modules": {
+                    "space": {
+                        "lang": ["en-US", "zh-TW"],
+                        "path": "space/space.js"
+                    }
+                }
+            }
+        }
+    }).use("_foo", "_bar", function (Y) {
         var manager = new Y.ModuleManager();
         manager.startAll();
     });

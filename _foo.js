@@ -5,11 +5,14 @@ YUI.add("_foo", function (Y) {
 
     _module = new Y.Module({
         selector: "#foo",
+        langModule: "space",
         init: function () {
             _module = this;
             _module.listen("say-hello", function (id, msg) {
                 // that.log(id + " says " + msg);
             });
+
+            Y.log(_module.getTrans("hihi", "12345"));
         },
         on: {
             viewload: function () {
@@ -23,4 +26,4 @@ YUI.add("_foo", function (Y) {
         }
     });
 
-}, "0.0.1", {requires: ["module", "node-style"]});
+}, "0.0.1", {requires: ["space", "module", "module-intl", "node-style"]});
