@@ -35,10 +35,7 @@ YUI.add("module", function (Y) {
      * Code Sample:
      *
      *     var module = new Y.Module({
-     *         id: "#foo",
-     *         strings: {
-     *
-     *         }
+     *         selector: "#foo"
      *     });
      *     module.on("viewload", function (e) {
      *         _node = this.get("node");
@@ -55,13 +52,13 @@ YUI.add("module", function (Y) {
     Module.NAME = "module";
     Module.ATTRS = {
         /**
-         * The module DOM ID (selector).
+         * The CSS selector for module outbox element.
          *
-         * @attribute id
+         * @attribute selector
          * @type {String}
          * @writeOnce
          */
-        id: {
+        selector: {
             value: null,
             writeOnce: true
         },
@@ -123,17 +120,6 @@ YUI.add("module", function (Y) {
             readOnly: true
         },
         /**
-         * Current module status.
-         *
-         * @attribute state
-         * @type String
-         * @readOnly
-         */
-        state: {
-            value: "init",
-            readOnly: true
-        },
-        /**
          * The messege names this module listens to.
          *
          * @attribute listeners
@@ -162,13 +148,16 @@ YUI.add("module", function (Y) {
          *                       this message.
          */
         broadcast: function (name, data, callback) {
-            _log("broadcast() is executed.");
             var that = this,
-                id = that.get("id");
+                selector = that.get("selector");
+
+            _log("broadcast() is executed. The '" +
+                 selector + "' module broadcasts a '" +
+                 name + "' message.");
 
             data = data || {};
             callback = callback || function () {};
-            _manager.addBroadcaster(id, name, data, callback);
+            _manager.addBroadcaster(selector, name, data, callback);
         },
         /**
          * Destroy the module instance.
@@ -196,9 +185,12 @@ YUI.add("module", function (Y) {
          *                            message name, id, data, callback
          */
         listen: function (name, callback) {
-            var that = this;
-            _log("listen() - " + name + " by #" + this.get("id"));
-            _manager.addListener(that.get("id"), name, callback);
+            var that = this,
+                selector = this.get("selector");
+            _log("listen() is executed. The '" +
+                 selector + "' module is listening for '" +
+                 name + "' message.");
+            _manager.addListener(selector, name, callback);
         },
         /**
          * A convenient alias method for Y.log(<msg>, "info", "<id>");
@@ -219,7 +211,8 @@ YUI.add("module", function (Y) {
          * @public
          */
         initializer: function (config) {
-            _log("initializer() - #" + config.id + " module.");
+            _log("initializer() is executed. " +
+                 "The " + config.selector + " module.");
             var that = this,
                 init;
 

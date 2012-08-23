@@ -1,7 +1,7 @@
 YUI.add("_bar", function (Y) {
 
     var module = new Y.Module({
-        id: "bar",
+        selector: "#bar",
         init: function () {
             var that = this;
             that.broadcast("say-hello", "hello");

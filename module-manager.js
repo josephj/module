@@ -23,7 +23,7 @@ YUI.add("module-manager", function (Y) {
         _log;
 
     /**
-     * Handle when contentready event is triggered.
+     * Handle when a module's contentready event is triggered.
      *
      * @method _handleModuleReady
      * @private
@@ -33,12 +33,15 @@ YUI.add("module-manager", function (Y) {
             node,
             id;
 
-        _log("#" + module.get("id") + " is ready.");
-        node = Y.one("#" + module.get("id"));
-        module._set("node", node);
+        _log("_handleModuleReady() is executed. The '" +
+             module.get("selector") + "' module is ready.");
+
+        // Update this module's attribute and fires the viewload event.
+        module._set("node", Y.one(module.get("selector")));
         module._set("ready", true);
-        module._set("state", "ready");
         module.fire("viewload");
+
+        // Check if all registered modules are ready.
         _waitTotal -= 1;
         if (_waitTotal === 0) {
             manager._set("ready", true);
@@ -53,7 +56,8 @@ YUI.add("module-manager", function (Y) {
      * @private
      */
     _handleReadyChange = function () {
-        _log("_handleReadyChange() is executed.");
+        _log("_handleReadyChange() is executed. " +
+             "The module network has been established.");
         var that = this,
             o = _queue.shift();
         while (o) {
@@ -61,6 +65,7 @@ YUI.add("module-manager", function (Y) {
             o = _queue.shift();
         }
     };
+
     /**
      * A convenient alias method for Y.log(<msg>, "info", "Y.Module");
      *
@@ -180,35 +185,21 @@ YUI.add("module-manager", function (Y) {
                         key = name;
                     }
 
-                    // TODO - Module may not ready at this moment.
                     // Prevent user handlers' error.
-                    (function () {
-                        var module = modules[i];
-                        module.retryCount = module.retryCount || 0;
-                        module.retryCount += 1;
-                        if (!module.get("ready")) {
-                            if (retryCount > 40) {
-                                _log("Module " + i + " fails retry.", "warn");
-                                return;
-                            }
-                            _log("Module " + i + " is not ready, try again.", "warn");
-                            Y.later(100, null, arguments.callee);
-                            return;
-                        }
-                        try {
-                            listener[key](name, id, data);
-                            modules[i].fire("message", {
-                                name: name,
-                                id: id,
-                                data: data
-                            });
-                            cached.push(i);
-                        } catch (e) {
-                            _log("_match('" + name + "', '" + id + "') fails - " +
-                                 "Error occurs in " + i + " module's onmessage method. " +
-                                 "The error message is '" + e.message + "'", "error");
-                        }
-                    })();
+                    var module = modules[i];
+                    try {
+                        listener[key](name, id, data);
+                        modules[i].fire("message", {
+                            name: name,
+                            id: id,
+                            data: data
+                        });
+                        cached.push(i);
+                    } catch (e) {
+                        _log("_match('" + name + "', '" + id + "') fails - " +
+                             "Error occurs in " + i + " module's onmessage method. " +
+                             "The error message is '" + e.message + "'", "error");
+                    }
                 }
             }
             /*
@@ -216,7 +207,7 @@ YUI.add("module-manager", function (Y) {
                  "successfully! There are " + cached.length + " modules being " +
                  "influenced: '#" + cached.join(", #") + "'");
                 */
-            _log("#" + id + ":" + name + " -> #" + cached.join(", #"));
+            _log(id + ":" + name + " -> " + cached.join(", #"));
         },
         /**
          * Register a broadcasting message in manager.
@@ -229,8 +220,14 @@ YUI.add("module-manager", function (Y) {
          */
         addBroadcaster: function (id, name, data, callback) {
             var that = this;
+
+            _log("addBroadcaster() is executed. The '" +
+                 name + "' message by '" + id + "' module " +
+                 "is walking through manager.");
+
             data = data || {};
             callback = callback || {};
+
             // The prefix must be identical with module ID.
             if (name.indexOf(":") !== -1) {
                 if (name.split(":")[0] !== id) {
@@ -243,13 +240,11 @@ YUI.add("module-manager", function (Y) {
             }
 
             if (that.get("ready")) {
-                _log("addBroadcaster() - The network is ready. Match this " +
-                     "broadcaset message '" + name + "' with " +
-                     "exisiting listeners.");
+                // Match this message with existing listeners.
                 that._match(name, id, data, callback);
             } else {
                 _log("addBroadcaster() - The network is not ready. " +
-                     "Keep this broadcaset message '" + name + "' in queue.",
+                     "Keep this message '" + name + "' in queue.",
                      "warn");
                 _queue.push({
                     id: id,
@@ -268,64 +263,110 @@ YUI.add("module-manager", function (Y) {
          * @param name {String} Target message label name.
          * @param callback {String} Target message label name.
          */
-        addListener: function (id, name, callback) {
-            _log("addListener('" + id + "', '" + name + "') is executed.");
+        addListener: function (selector, name, callback) {
             var that = this,
                 listeners; // The shortcut for existing listeners.
 
+            _log("addListener() is executed. The listener for '" +
+                 name + "' message by '" + selector + "' module " +
+                 "is added to manager.");
+
             listeners = that.get("listeners");
-            if (listeners[id]) {
-                listeners[id][name] = callback;
+            if (listeners[selector]) {
+                listeners[selector][name] = callback;
             } else {
-                listeners[id] = {};
-                listeners[id][name] = callback;
+                listeners[selector] = {};
+                listeners[selector][name] = callback;
             }
         },
         /**
-         * Let the module manager can be able to broadcast to other modules.
+         * Manager broadcasts a message to other modules.
          *
          * @method broadcast
+         * @param name {String} The message name.
+         * @param data {String} The belonging data.
+         * @param callback {Function} The callback function.
          * @public
          */
         broadcast: function (name, data, callback) {
-            _log("broadcast('" + name + "', <data>, <callback>) is executed.");
+            _log("broadcast('*:" + name + "', <data>, <callback>) is executed.");
             var that = this;
+            that.addBroadcaster("*", name, data, callback);
         },
+        /**
+         * The init method for Module Manager.
+         * It just simply binds required events.
+         *
+         * @method initializer
+         * @public
+         */
         initializer: function () {
             var that = this;
             that.on("readyChange", _handleReadyChange, that);
         },
-        listen: function () {
+        /**
+         * Manager listens for a specific message from modules.
+         *
+         * @method listen
+         * @public
+         * @param name {String} The message name.
+         * @param callback {Function} The callback function.
+         */
+        listen: function (name, callback) {
+            _log("broadcast('*:" + name + "', <data>, <callback>) is executed.");
+            var that = this;
+            that.addListener("*", name, callback);
         },
+        /**
+         * Let individual Y.Module instance registers so the module can be started.
+         *
+         * @method register
+         * @public
+         * @param module {Y.Module} The Y.Module instance.
+         */
         register: function (module) {
-            _log("register() #" + module.get("id") + " module.");
             var that = this,
-                modules = that.get("modules");
-            modules[module.get("id")] = module;
+                modules = that.get("modules"),
+                selector = module.get("selector");
+
+            _log("register() - " + selector + " module.");
+
             try {
                 module.get("init").call(module);
             } catch (e) {
-                _log("module init fails - " +
-                     "The error message is '" + e.message + "'", "error");
+                _log("register() - module registers fails because " +
+                     "'" + e.message + "'", "error");
+                return;
             }
+
+            // Add this module to manager's 'modules' attribute.
+            modules[selector] = module;
         },
+        /**
+         * Start a specific module.
+         * It listens for contentready event to make sure the module is ready.
+         *
+         * @method start
+         * @public
+         * @param module {Y.Module} The module instance.
+         */
         start: function (module) {
-            _log("start() #" + module.get("id") + " module.");
+            _log("start() is executed. The manager starts the '" + module.get("selector") + "' module.");
             var that = this,
-                selector = "#" + module.get("id");
+                selector = module.get("selector");
             if (!module.get("ready")) {
                 _waitTotal += 1;
                 Y.on("contentready", _handleModuleReady, selector, module, that);
             }
         },
         /**
-         * Launch the module platform.
+         * Start all registered modules to launch the module network.
          *
          * @method startAll
          * @public
          */
         startAll: function () {
-            _log("startAll() is executed.");
+            _log("startAll() is executed. The manager starts all registered module.");
             var that = this,
                 modules = that.get("modules");
 

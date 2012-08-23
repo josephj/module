@@ -4,7 +4,7 @@ YUI.add("_foo", function (Y) {
         _module;
 
     _module = new Y.Module({
-        id: "foo",
+        selector: "#foo",
         init: function () {
             _module = this;
             _module.listen("say-hello", function (id, msg) {
