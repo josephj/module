@@ -22,20 +22,23 @@
 </style>
 </head>
 <body class="yui3-skin-sam">
+
     <div id="foo" class="mod">
         <div class="hd">#foo</div>
         <div class="bd"><ul></ul></div>
     </div>
+
     <div id="bar" class="mod">
         <div class="hd">#bar</div>
         <div class="bd"><ul></ul></div>
     </div>
+
     <script>
-    YUI().use("console", "_foo", "_bar", "module-manager", function (Y) {
-       // (new Y.Console()).render();
+    YUI().use("_foo", "_bar", function (Y) {
         var manager = new Y.ModuleManager();
         manager.startAll();
     });
     </script>
+
 </body>
 </html>

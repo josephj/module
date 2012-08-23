@@ -54,12 +54,26 @@ YUI.add("module", function (Y) {
 
     Module.NAME = "module";
     Module.ATTRS = {
-        init: {
+        /**
+         * The module DOM ID (selector).
+         *
+         * @attribute id
+         * @type {String}
+         * @writeOnce
+         */
+        id: {
             value: null,
             writeOnce: true
         },
-        id: {
+        /**
+         * The module initialization function.
+         *
+         * @attribute init
+         * @type Function
+         */
+        init: {
             value: null,
+            validator: Y.Lang.isFunction,
             writeOnce: true
         },
         /**
@@ -129,21 +143,14 @@ YUI.add("module", function (Y) {
         listeners: {
             value: [],
             validator: Lang.isArray,
+            getter: function () {
+                var id = this.get("id");
+                _manager.get("listeners")[id];
+            },
             readOnly: true
         }
     };
     Y.extend(Module, Y.Base, {
-        /**
-         * Register this module instance to manager.
-         *
-         * @method _register
-         * @private
-         */
-        _register: function () {
-            _log("_register() is executer.");
-            var that = this;
-            _manager.register(that);
-        },
         /**
          * Module broadcast method.
          *
@@ -213,7 +220,6 @@ YUI.add("module", function (Y) {
          */
         initializer: function (config) {
             _log("initializer() - #" + config.id + " module.");
-
             var that = this,
                 init;
 
@@ -221,7 +227,7 @@ YUI.add("module", function (Y) {
 
             // Execute module initializer.
             init = config.init || function () {};
-            that._register();
+            _manager.register(that);
 
             //==================
             //  Publish events
@@ -246,7 +252,5 @@ YUI.add("module", function (Y) {
             that.publish("viewload", {emitFacade: true});
         }
     });
-
     Y.Module = Module;
-
 }, "0.0.1", {requires: ["base", "node-base", "event-base", "module-manager"]});
