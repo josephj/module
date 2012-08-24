@@ -175,6 +175,18 @@ YUI.add("module", function (Y) {
             }
         },
         /**
+         * Get the view node of this module.
+         * The purpose of creating this method is to be consistent
+         * with previous version.
+         *
+         * @method getViewNode
+         * @public
+         * @return {Y.Node} The view node of this module.
+         */
+        getViewNode: function () {
+            return this.get("node");
+        },
+        /**
          * Register a specific message you want listen.
          *
          * @method listen
