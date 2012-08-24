@@ -1,3 +1,4 @@
+/*global YUI */
 YUI.add("module-intl", function (Y) {
 
     var _log,
@@ -22,11 +23,20 @@ YUI.add("module-intl", function (Y) {
 
     ModuleIntl.ATTRS = {
         langModule: {
-            value: ""
+            value: null
         },
         langTag: {
-            value: Y.config.lang,
-            setter: function (value) {
+            valueFn: function () {
+                var lang = Y.config.lang;
+                if (!lang) {
+                    return "en-US";
+                }
+                if (Y.Lang.isString(lang)) {
+                    lang = Y.Lang.trim(lang.split(",")[0]);
+                } else if (Y.Lang.isArray(lang)) {
+                    lang = lang[0];
+                }
+                return lang;
             }
         },
         trans: {
@@ -36,75 +46,46 @@ YUI.add("module-intl", function (Y) {
     };
 
     ModuleIntl.prototype = {
-        initializer: function () {
-            _log("initializer() is executed.");
-            var that = this,
-                module = that.get("langModule"),
-                tag = that.get("langTag");
-
-            if (!module || !tag) {
-                return;
-            }
-
-            Y.use("lang/" + module + "_" + tag, function (Y) {
-                Y.Intl.setLang(module, tag);
-                that._set("trans", Y.Intl.get(module));
-                Y.log('hi');
-            });
-
-        },
         getTrans: function (key, value, token) {
             _log("getTrans() is executed.");
             var that = this,
-                isExist,
-                trans,
-                tag,
-                token,
+                trans,   // The translation strings in same module.
+                tag,     // The language tag.
                 text,
-                id,
-                module; // The language module.
+                id,      // The module ID. It could also be class name.
+                module;  // The language module.
 
-            tag = that.get("langTag");
-            token = token || null;
-            value = value || "";
+            value  = value || "";
+            tag    = that.get("langTag");
             module = that.get("langModule");
-            id = that.get("selector").replace("#", "").replace(".", "");
 
-            // Make sure module name has been defined.
-            if (!that.get("langModule")) {
-                _log("getTrans() fails because module is not defined.", "error");
-                return;
+            // The Y.Module instance must define langModule attribute.
+            if (!module) {
+                _log("getTrans() - Skip because langModule attribute " +
+                     "is not defined.", "warn");
+                return "";
             }
 
             // Get tranlation resource array.
             trans = that.get("trans");
-
             if (!trans) {
-                Y.use("lang/" + module + "_" + tag, function (Y) {
-                    Y.Intl.setLang(module, tag);
-                    that._set("trans", Y.Intl.get(module));
-                    that.getTrans.apply(that, [key, value, token]);
-                });
-                return;
+                trans = Y.Intl.get(module) || {};
+                that._set("trans", trans);
             }
 
             // Full language key is composed by module name, div id, and key.
+            id  = that.get("selector").replace("#", "").replace(".", "");
             key = [module, id, key].join("-");
 
-            // Check if the key exists in language resource.
-            isExist =  (trans[key]) ? true : false;
-            if (isExist) {
-                text = trans[key];
-            } else {
+            // Return default value if trans for this key doesn't exist.
+            text = trans[key];
+            if (!text) {
                 _log("getTrans() - This language key '" + key +
                      "' has not been translated yet.", "warn");
-                text = value;
+                return value;
             }
 
-            if (token) {
-                text = Y.substitute(text, token);
-            }
-            return text;
+            return (token) ? Y.substitute(text, token) : text;
         }
     };
 
