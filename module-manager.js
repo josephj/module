@@ -196,6 +196,10 @@ YUI.add("module-manager", function (Y) {
                                 id: id,
                                 data: data
                             });
+                            // Be compatible with previous version.
+                            if (modules[i].onmessage) {
+                                modules[i].onmessage(name, id, data);
+                            }
                         }
                     } catch (e) {
                         _log("_match('" + name + "', '" + id + "') fails - " +
