@@ -213,7 +213,7 @@ YUI.add("module", function (Y) {
         log: function (msg, type, module) {
             var that = this;
             type = type || "info";
-            module = module || "#" + that.get("id");
+            module = module || that.get("selector");
             Y.log(msg, type, module);
         },
         /**

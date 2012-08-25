@@ -189,12 +189,14 @@ YUI.add("module-manager", function (Y) {
                     var module = modules[i];
                     try {
                         listener[key](name, id, data);
-                        modules[i].fire("message", {
-                            name: name,
-                            id: id,
-                            data: data
-                        });
                         cached.push(i);
+                        if (i !== "*") {
+                            modules[i].fire("message", {
+                                name: name,
+                                id: id,
+                                data: data
+                            });
+                        }
                     } catch (e) {
                         _log("_match('" + name + "', '" + id + "') fails - " +
                              "Error occurs in " + i + " module's onmessage method. " +
@@ -202,12 +204,7 @@ YUI.add("module-manager", function (Y) {
                     }
                 }
             }
-            /*
-            _log("_match('" + name + "', '" + id + "', '<data>') is executed " +
-                 "successfully! There are " + cached.length + " modules being " +
-                 "influenced: '#" + cached.join(", #") + "'");
-                */
-            _log(id + ":" + name + " -> " + cached.join(", #"));
+            _log(id + ":" + name + " -> " + cached.join(", "));
         },
         /**
          * Register a broadcasting message in manager.
@@ -313,7 +310,7 @@ YUI.add("module-manager", function (Y) {
          * @param callback {Function} The callback function.
          */
         listen: function (name, callback) {
-            _log("broadcast('*:" + name + "', <data>, <callback>) is executed.");
+            _log("listen('*:" + name + "', <data>, <callback>) is executed.");
             var that = this;
             that.addListener("*", name, callback);
         },
@@ -332,7 +329,7 @@ YUI.add("module-manager", function (Y) {
             _log("register() - " + selector + " module.");
 
             try {
-                module.get("init").call(module);
+                module.get("init").call(module, module);
             } catch (e) {
                 _log("register() - module registers fails because " +
                      "'" + e.message + "'", "error");
