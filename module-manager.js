@@ -190,17 +190,29 @@ YUI.add("module-manager", function (Y) {
                     }
 
                     // Prevent user handlers' error.
-                    try {
                         cached.push(i);
 
                         // Execute callback
-                        module[name](name, id, data);
+                        try {
+                            module[name](name, id, data);
+                        } catch (e) {
+                            _log("_match('" + name + "', '" + id + "') fails " +
+                                 "- Error occurs in " + i + " module's " +
+                                 "listen callback method. The error message " +
+                                 "is '" + e.message + "'", "error");
+                        }
 
                         if (i !== "*") {
 
-                            // Be compatible with previous version.
-                            if (modules[i].onmessage) {
-                                modules[i].onmessage(name, id, data);
+                            try {
+                                // Be compatible with previous version.
+                                if (modules[i].onmessage) {
+                                    modules[i].onmessage(name, id, data);
+                                }
+                            } catch (e) {
+                                _log("_match('" + name + "', '" + id + "') fails - " +
+                                     "Error occurs in " + i + " module's onmessage method. " +
+                                     "The error message is '" + e.message + "'", "error");
                             }
 
                             // Current implementation.
@@ -211,11 +223,6 @@ YUI.add("module-manager", function (Y) {
                             });
                         }
 
-                    } catch (e) {
-                        _log("_match('" + name + "', '" + id + "') fails - " +
-                             "Error occurs in " + i + " module's onmessage method. " +
-                             "The error message is '" + e.message + "'", "error");
-                    }
                 }
             }
             _log(id + ":" + name + " -> " + cached.join(", "));
