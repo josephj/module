@@ -158,7 +158,7 @@ YUI.add("module-manager", function (Y) {
             var that = this,
                 modules,   // The influenced modules.
                 listeners,
-                listener,  // The shortcut for iteration.
+                module,  // The shortcut for iteration.
                 cached,
                 i,         // The listener's module ID.
                 key;       // The message label name.
@@ -168,39 +168,49 @@ YUI.add("module-manager", function (Y) {
             listeners = that.get("listeners");
             name      = name.split(":")[1];
 
-            // Loop to find matched listeners.
+            /**
+             * listeners = {
+             *     "#channel-welcome": {
+             *         "error": callback,
+             *         "playing": callback,
+             *         "switch-video": callback,
+             *         "switch-view": callback
+             *     }
+             * }
+             */
+
+            // Loop all module listeners to find matched listeners.
             for (i in listeners) {
                 if (listeners.hasOwnProperty(i)) {
-                    listener = listeners[i];
+                    module = listeners[i];
 
-                    // Ignore unmatched listener.
-                    if (!listener[name] && !listener[id + ":" + name]) {
+                    // Check if this module has subscribe the message.
+                    if (!module[name]) {
                         continue;
                     }
 
-                    // Get the message name.
-                    if (listener[id + ":" + name]) {
-                        key  = id + ":" + name;
-                    } else {
-                        key = name;
-                    }
-
                     // Prevent user handlers' error.
-                    var module = modules[i];
                     try {
-                        listener[key](name, id, data);
                         cached.push(i);
+
+                        // Execute callback
+                        module[name](name, id, data);
+
                         if (i !== "*") {
+
+                            // Be compatible with previous version.
+                            if (modules[i].onmessage) {
+                                modules[i].onmessage(name, id, data);
+                            }
+
+                            // Current implementation.
                             modules[i].fire("message", {
                                 name: name,
                                 id: id,
                                 data: data
                             });
-                            // Be compatible with previous version.
-                            if (modules[i].onmessage) {
-                                modules[i].onmessage(name, id, data);
-                            }
                         }
+
                     } catch (e) {
                         _log("_match('" + name + "', '" + id + "') fails - " +
                              "Error occurs in " + i + " module's onmessage method. " +
@@ -272,6 +282,7 @@ YUI.add("module-manager", function (Y) {
                  name + "' message by '" + selector + "' module " +
                  "is added to manager.");
 
+            callback = callback || function () {};
             listeners = that.get("listeners");
             if (listeners[selector]) {
                 listeners[selector][name] = callback;
