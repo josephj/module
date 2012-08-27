@@ -1,4 +1,11 @@
 /*global YUI */
+/**
+ * An extension for Y.Module which lets
+ * module instance can get translation strings.
+ *
+ * @module module-intl
+ * @requires base-build, module, intl, substitute
+ */
 YUI.add("module-intl", function (Y) {
 
     var _log,
@@ -18,13 +25,27 @@ YUI.add("module-intl", function (Y) {
 
     /**
      * The module intl extension.
+     *
+     * @class ModelIntl
      */
     function ModuleIntl() {}
 
     ModuleIntl.ATTRS = {
+        /**
+         * Module must define its lang module before executing getTrans.
+         *
+         * @attribute langModule
+         * @type String
+         */
         langModule: {
             value: null
         },
+        /**
+         * The active language tag.
+         *
+         * @attribute langTag
+         * @type String
+         */
         langTag: {
             valueFn: function () {
                 var lang = Y.config.lang;
@@ -39,6 +60,12 @@ YUI.add("module-intl", function (Y) {
                 return lang;
             }
         },
+        /**
+         *  The translation collection for this language module.
+         *
+         *  @attribute trans
+         *  @type Object
+         */
         trans: {
             value: null,
             validator: Y.Lang.isObject
@@ -46,6 +73,15 @@ YUI.add("module-intl", function (Y) {
     };
 
     ModuleIntl.prototype = {
+        /**
+         * Get translation according to current language module and tag.
+         *
+         * @method getTrans
+         * @public
+         * @param key {String} The trnalation key.
+         * @param value {String} The default value.
+         * @param token {Object} The replace token object.
+         */
         getTrans: function (key, value, token) {
             _log("getTrans() is executed.");
             var that = this,

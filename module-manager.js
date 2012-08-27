@@ -81,7 +81,7 @@ YUI.add("module-manager", function (Y) {
     /**
      * The singleton which manages all registered modules.
      *
-     * @constructor ModuleManager
+     * @class ModuleManager
      */
     function ModuleManager() {
         if (!_instance) {
@@ -167,17 +167,6 @@ YUI.add("module-manager", function (Y) {
             modules   = that.get("modules");
             listeners = that.get("listeners");
             name      = name.split(":")[1];
-
-            /**
-             * listeners = {
-             *     "#channel-welcome": {
-             *         "error": callback,
-             *         "playing": callback,
-             *         "switch-video": callback,
-             *         "switch-view": callback
-             *     }
-             * }
-             */
 
             // Loop all module listeners to find matched listeners.
             for (i in listeners) {
