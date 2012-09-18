@@ -44,6 +44,7 @@ YUI.add("module-manager", function (Y) {
         // Check if all registered modules are ready.
         _waitTotal -= 1;
         if (_waitTotal === 0) {
+            _log("_handleModuleReady() - The module network is ready.");
             manager._set("ready", true);
         }
     };
@@ -362,6 +363,15 @@ YUI.add("module-manager", function (Y) {
             _log("start() is executed. The manager starts the '" + module.get("selector") + "' module.");
             var that = this,
                 selector = module.get("selector");
+
+            // Some module just doesn't have a view.
+            // Set the status to ready directly.
+            if (!module.get("hasView")) {
+                module._set("node", null);
+                module._set("ready", true);
+                return;
+            }
+
             if (!module.get("ready")) {
                 _waitTotal += 1;
                 Y.on("contentready", _handleModuleReady, selector, module, that);

@@ -52,6 +52,18 @@ YUI.add("module", function (Y) {
     Module.NAME = "module";
     Module.ATTRS = {
         /**
+         * Whether this module has a corresponded view.
+         *
+         * @attribute hasView
+         * @type {String}
+         * @writeOnce
+         */
+        hasView: {
+            value: true,
+            validator: Y.Lang.isBoolean,
+            writeOnce: true
+        },
+        /**
          * The CSS selector for module outbox element.
          *
          * @attribute selector
