@@ -38,12 +38,10 @@
     YUI({
         "filter": "raw",
         "async": true,
-        "langs": "zh-TW,en-US",
         "groups": {
             "user": {
                 "filter": "raw",
                 "base": "http://josephj.com/lab/2012/module/",
-                "langs": ["en-US", "zh-TW"],
                 "modules": {
                     "space": {
                         "lang": ["en-US", "zh-TW"],
@@ -55,7 +53,17 @@
     }).use("_foo", "_bar", function (Y) {
         var manager = new Y.ModuleManager();
         manager.startAll();
+        window.a = manager;
     });
+
+    YUI().use("module-manager", function (Y) {
+        var manager = new Y.ModuleManager();
+        window.b = manager;
+        alert(window.a === window.b);
+        manager.listen("say-hello", function (id, msg, data) {
+            Y.log(data);
+        });
+    })
     </script>
 
 </body>

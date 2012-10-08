@@ -8,6 +8,12 @@
 /*global YUI */
 YUI.add("module-manager", function (Y) {
 
+    // Make sure user accesses exactly same instance.
+    if (window.ModuleManager) {
+        Y.ModuleManager = window.ModuleManager;
+        return;
+    }
+
     var _instance,      // For singleton.
         _queue = [],    // The queued broadcasting messages.
         _waitTotal = 0, // The amount of modules which are not ready.
@@ -189,11 +195,13 @@ YUI.add("module-manager", function (Y) {
                     var module = modules[i];
                     try {
                         listener[key](name, id, data);
-                        modules[i].fire("message", {
-                            name: name,
-                            id: id,
-                            data: data
-                        });
+                        if (i !== "*") {
+                            modules[i].fire("message", {
+                                name: name,
+                                id: id,
+                                data: data
+                            });
+                        }
                         cached.push(i);
                     } catch (e) {
                         _log("_match('" + name + "', '" + id + "') fails - " +
@@ -376,7 +384,11 @@ YUI.add("module-manager", function (Y) {
         }
     });
 
-    Y.ModuleManager = ModuleManager;
+    // Make sure it's a singleton even when multiple YUI instances exist.
+    if (!window.ModuleManager) {
+        window.ModuleManager = ModuleManager;
+    }
+    Y.ModuleManager = window.ModuleManager;
 
 }, "0.0.1", {requires: ["base"]});
 
