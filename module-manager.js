@@ -8,19 +8,36 @@
 /*global YUI */
 YUI.add("module-manager", function (Y) {
 
-    var _instance,      // For singleton.
-        _queue = [],    // The queued broadcasting messages.
-        _waitTotal = 0, // The amount of modules which are not ready.
+    var _instance,            // For singleton.
+        _queue = [],          // The queued broadcasting messages.
+        _waitTotal = 0,       // The amount of modules which are not ready.
+        _hasDOMReady = false, // A flag to save if DOM is ready.
         //===========================
         // Constants
         //===========================
         MODULE_ID = "Y.ModuleManager",
+        POLL_INTERVAL = 100,
         //===========================
         // Private Method
         //===========================
+        _checkReady,
         _handleReadyChange,
         _handleModuleReady,
         _log;
+
+    _checkReady = function () {
+        _log("_checkReady() is executed.");
+        var that = this;
+        if (!that.get("ready") && !_hasDOMReady) {
+            Y.later(POLL_INTERVAL, that, _checkReady);
+            return;
+        }
+        if (_hasDOMReady && _waitTotal > 0 && !that.get("ready")) {
+            _log("_checkReady() - Start module platform without waiting " +
+                 "every module ready.", "warn");
+            that._set("ready", true);
+        }
+    };
 
     /**
      * Handle when a module's contentready event is triggered.
@@ -312,6 +329,10 @@ YUI.add("module-manager", function (Y) {
         initializer: function () {
             var that = this;
             that.on("readyChange", _handleReadyChange, that);
+            Y.on("domready", function (e) {
+                _hasDOMReady = true;
+            });
+            Y.later(POLL_INTERVAL, this, _checkReady);
         },
         /**
          * Manager listens for a specific message from modules.
