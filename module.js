@@ -52,6 +52,18 @@ YUI.add("module", function (Y) {
     Module.NAME = "module";
     Module.ATTRS = {
         /**
+         * Whether this module has a corresponded view.
+         *
+         * @attribute hasView
+         * @type {String}
+         * @writeOnce
+         */
+        hasView: {
+            value: true,
+            validator: Y.Lang.isBoolean,
+            writeOnce: true
+        },
+        /**
          * The CSS selector for module outbox element.
          *
          * @attribute selector
@@ -175,6 +187,18 @@ YUI.add("module", function (Y) {
             }
         },
         /**
+         * Get the view node of this module.
+         * The purpose of creating this method is to be consistent
+         * with previous version.
+         *
+         * @method getViewNode
+         * @public
+         * @return {Y.Node} The view node of this module.
+         */
+        getViewNode: function () {
+            return this.get("node");
+        },
+        /**
          * Register a specific message you want listen.
          *
          * @method listen
@@ -201,7 +225,7 @@ YUI.add("module", function (Y) {
         log: function (msg, type, module) {
             var that = this;
             type = type || "info";
-            module = module || "#" + that.get("id");
+            module = module || that.get("selector");
             Y.log(msg, type, module);
         },
         /**

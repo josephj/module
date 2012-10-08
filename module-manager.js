@@ -17,16 +17,33 @@ YUI.add("module-manager", function (Y) {
     var _instance,      // For singleton.
         _queue = [],    // The queued broadcasting messages.
         _waitTotal = 0, // The amount of modules which are not ready.
+        _hasDOMReady = false, // A flag to save if DOM is ready.
         //===========================
         // Constants
         //===========================
         MODULE_ID = "Y.ModuleManager",
+        POLL_INTERVAL = 100,
         //===========================
         // Private Method
         //===========================
+        _checkReady,
         _handleReadyChange,
         _handleModuleReady,
         _log;
+
+    _checkReady = function () {
+        _log("_checkReady() is executed.");
+        var that = this;
+        if (!that.get("ready") && !_hasDOMReady) {
+            Y.later(POLL_INTERVAL, that, _checkReady);
+            return;
+        }
+        if (_hasDOMReady && _waitTotal > 0 && !that.get("ready")) {
+            _log("_checkReady() - Start module platform without waiting " +
+                 "every module ready.", "warn");
+            that._set("ready", true);
+        }
+    };
 
     /**
      * Handle when a module's contentready event is triggered.
@@ -50,6 +67,7 @@ YUI.add("module-manager", function (Y) {
         // Check if all registered modules are ready.
         _waitTotal -= 1;
         if (_waitTotal === 0) {
+            _log("_handleModuleReady() - The module network is ready.");
             manager._set("ready", true);
         }
     };
@@ -87,7 +105,7 @@ YUI.add("module-manager", function (Y) {
     /**
      * The singleton which manages all registered modules.
      *
-     * @constructor ModuleManager
+     * @class ModuleManager
      */
     function ModuleManager() {
         if (!_instance) {
@@ -164,7 +182,7 @@ YUI.add("module-manager", function (Y) {
             var that = this,
                 modules,   // The influenced modules.
                 listeners,
-                listener,  // The shortcut for iteration.
+                module,  // The shortcut for iteration.
                 cached,
                 i,         // The listener's module ID.
                 key;       // The message label name.
@@ -174,48 +192,53 @@ YUI.add("module-manager", function (Y) {
             listeners = that.get("listeners");
             name      = name.split(":")[1];
 
-            // Loop to find matched listeners.
+            // Loop all module listeners to find matched listeners.
             for (i in listeners) {
                 if (listeners.hasOwnProperty(i)) {
-                    listener = listeners[i];
+                    module = listeners[i];
 
-                    // Ignore unmatched listener.
-                    if (!listener[name] && !listener[id + ":" + name]) {
+                    // Check if this module has subscribe the message.
+                    if (!module[name]) {
                         continue;
                     }
 
-                    // Get the message name.
-                    if (listener[id + ":" + name]) {
-                        key  = id + ":" + name;
-                    } else {
-                        key = name;
+                    // Prevent user handlers' error.
+                    cached.push(i);
+
+                    // Execute callback
+                    try {
+                        module[name](name, id, data);
+                    } catch (e) {
+                        _log("_match('" + name + "', '" + id + "') fails " +
+                             "- Error occurs in " + i + " module's " +
+                             "listen callback method. The error message " +
+                             "is '" + e.message + "'", "error");
                     }
 
-                    // Prevent user handlers' error.
-                    var module = modules[i];
-                    try {
-                        listener[key](name, id, data);
-                        if (i !== "*") {
-                            modules[i].fire("message", {
-                                name: name,
-                                id: id,
-                                data: data
-                            });
+                    if (i !== "*") {
+
+                        try {
+                            // Be compatible with previous version.
+                            if (modules[i].onmessage) {
+                                modules[i].onmessage(name, id, data);
+                            }
+                        } catch (e) {
+                            _log("_match('" + name + "', '" + id + "') fails - " +
+                                 "Error occurs in " + i + " module's onmessage method. " +
+                                 "The error message is '" + e.message + "'", "error");
                         }
-                        cached.push(i);
-                    } catch (e) {
-                        _log("_match('" + name + "', '" + id + "') fails - " +
-                             "Error occurs in " + i + " module's onmessage method. " +
-                             "The error message is '" + e.message + "'", "error");
+
+                        // Current implementation.
+                        modules[i].fire("message", {
+                            name: name,
+                            id: id,
+                            data: data
+                        });
                     }
+
                 }
             }
-            /*
-            _log("_match('" + name + "', '" + id + "', '<data>') is executed " +
-                 "successfully! There are " + cached.length + " modules being " +
-                 "influenced: '#" + cached.join(", #") + "'");
-                */
-            _log(id + ":" + name + " -> " + cached.join(", #"));
+            _log(id + ":" + name + " -> " + cached.join(", "));
         },
         /**
          * Register a broadcasting message in manager.
@@ -279,6 +302,7 @@ YUI.add("module-manager", function (Y) {
                  name + "' message by '" + selector + "' module " +
                  "is added to manager.");
 
+            callback = callback || function () {};
             listeners = that.get("listeners");
             if (listeners[selector]) {
                 listeners[selector][name] = callback;
@@ -311,6 +335,10 @@ YUI.add("module-manager", function (Y) {
         initializer: function () {
             var that = this;
             that.on("readyChange", _handleReadyChange, that);
+            Y.on("domready", function (e) {
+                _hasDOMReady = true;
+            });
+            Y.later(POLL_INTERVAL, this, _checkReady);
         },
         /**
          * Manager listens for a specific message from modules.
@@ -321,7 +349,7 @@ YUI.add("module-manager", function (Y) {
          * @param callback {Function} The callback function.
          */
         listen: function (name, callback) {
-            _log("broadcast('*:" + name + "', <data>, <callback>) is executed.");
+            _log("listen('*:" + name + "', <data>, <callback>) is executed.");
             var that = this;
             that.addListener("*", name, callback);
         },
@@ -340,7 +368,7 @@ YUI.add("module-manager", function (Y) {
             _log("register() - " + selector + " module.");
 
             try {
-                module.get("init").call(module);
+                module.get("init").call(module, module);
             } catch (e) {
                 _log("register() - module registers fails because " +
                      "'" + e.message + "'", "error");
@@ -362,6 +390,15 @@ YUI.add("module-manager", function (Y) {
             _log("start() is executed. The manager starts the '" + module.get("selector") + "' module.");
             var that = this,
                 selector = module.get("selector");
+
+            // Some module just doesn't have a view.
+            // Set the status to ready directly.
+            if (!module.get("hasView")) {
+                module._set("node", null);
+                module._set("ready", true);
+                return;
+            }
+
             if (!module.get("ready")) {
                 _waitTotal += 1;
                 Y.on("contentready", _handleModuleReady, selector, module, that);
@@ -391,4 +428,3 @@ YUI.add("module-manager", function (Y) {
     Y.ModuleManager = window.ModuleManager;
 
 }, "0.0.1", {requires: ["base"]});
-
