@@ -111,6 +111,7 @@ YUI.add("module-intl", function (Y) {
 
             // Full language key is composed by module name, div id, and key.
             id  = that.get("selector").replace("#", "").replace(".", "");
+            id = id.replace(/-/g, "_");
             key = [module, id, key].join("-");
 
             // Return default value if trans for this key doesn't exist.
