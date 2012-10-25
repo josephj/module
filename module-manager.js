@@ -5,7 +5,7 @@
  *
  * @module module-manager
  */
-/*global YUI */
+/*global YUI, window */
 YUI.add("module-manager", function (Y) {
 
     // Make sure user accesses exactly same instance.
@@ -14,15 +14,17 @@ YUI.add("module-manager", function (Y) {
         return;
     }
 
-    var _instance,      // For singleton.
-        _queue = [],    // The queued broadcasting messages.
-        _waitTotal = 0, // The amount of modules which are not ready.
+    var _instance,            // For singleton.
+        _queue = [],          // The queued broadcasting messages.
+        _queueModules = [],   // List modules which are not ready.
+        _waitTotal = 0,       // The amount of modules which are not ready.
         _hasDOMReady = false, // A flag to save if DOM is ready.
         //===========================
         // Constants
         //===========================
         MODULE_ID = "Y.ModuleManager",
         POLL_INTERVAL = 100,
+        RETRY_COUNT = 10,
         //===========================
         // Private Method
         //===========================
@@ -34,13 +36,23 @@ YUI.add("module-manager", function (Y) {
     _checkReady = function () {
         _log("_checkReady() is executed.");
         var that = this;
+
+        // Both DOM and module are not ready.
         if (!that.get("ready") && !_hasDOMReady) {
             Y.later(POLL_INTERVAL, that, _checkReady);
             return;
         }
+
+        // DOM is ready but not ready RETRY_COUNT.
+        if (!that.get("ready") && _hasDOMReady && RETRY_COUNT !== 0) {
+            Y.later(POLL_INTERVAL, that, _checkReady);
+            RETRY_COUNT -= 1;
+            return;
+        }
+
         if (_hasDOMReady && _waitTotal > 0 && !that.get("ready")) {
             _log("_checkReady() - Start module platform without waiting " +
-                 "every module ready.", "warn");
+                 "every module ready. (" + _queueModules.join(", ") + ")", "warn");
             that._set("ready", true);
         }
     };
@@ -54,15 +66,29 @@ YUI.add("module-manager", function (Y) {
     _handleModuleReady = function (manager) {
         var module = this, // The module instance.
             node,
-            id;
+            id,
+            i,
+            j;
 
         _log("_handleModuleReady() is executed. The '" +
              module.get("selector") + "' module is ready.");
 
         // Update this module's attribute and fires the viewload event.
-        module._set("node", Y.one(module.get("selector")));
-        module._set("ready", true);
-        module.fire("viewload");
+        try {
+            module._set("node", Y.one(module.get("selector")));
+            module._set("ready", true);
+            module.fire("viewload");
+        } catch (e) {
+            _log(e.message, "warn");
+        }
+
+        // Remove module from _queueModules.
+        for (i = _queueModules.length - 1, j = 0; i >= j; i -= 1) {
+            if (module.get("selector") === _queueModules[i]) {
+                _queueModules.splice(i, 1);
+                break;
+            }
+        }
 
         // Check if all registered modules are ready.
         _waitTotal -= 1;
@@ -182,7 +208,8 @@ YUI.add("module-manager", function (Y) {
             var that = this,
                 modules,   // The influenced modules.
                 listeners,
-                module,  // The shortcut for iteration.
+                module,    // The shortcut for iteration.
+                shortName,
                 cached,
                 i,         // The listener's module ID.
                 key;       // The message label name.
@@ -190,7 +217,6 @@ YUI.add("module-manager", function (Y) {
             cached    = [];
             modules   = that.get("modules");
             listeners = that.get("listeners");
-            name      = name.split(":")[1];
 
             // Loop all module listeners to find matched listeners.
             for (i in listeners) {
@@ -198,7 +224,8 @@ YUI.add("module-manager", function (Y) {
                     module = listeners[i];
 
                     // Check if this module has subscribe the message.
-                    if (!module[name]) {
+                    shortName = name.split(":")[1];
+                    if (!module[name] && !module[shortName]) {
                         continue;
                     }
 
@@ -207,9 +234,13 @@ YUI.add("module-manager", function (Y) {
 
                     // Execute callback
                     try {
-                        module[name](name, id, data);
+                        if (module[shortName]) {
+                            module[shortName](shortName, id, data);
+                        } else {
+                            module[name](shortName, id, data);
+                        }
                     } catch (e) {
-                        _log("_match('" + name + "', '" + id + "') fails " +
+                        _log("_match('" + shortName + "', '" + id + "') fails " +
                              "- Error occurs in " + i + " module's " +
                              "listen callback method. The error message " +
                              "is '" + e.message + "'", "error");
@@ -222,10 +253,10 @@ YUI.add("module-manager", function (Y) {
                             if (modules[i].onmessage) {
                                 modules[i].onmessage(name, id, data);
                             }
-                        } catch (e) {
-                            _log("_match('" + name + "', '" + id + "') fails - " +
+                        } catch (e2) {
+                            _log("_match('" + shortName + "', '" + id + "') fails - " +
                                  "Error occurs in " + i + " module's onmessage method. " +
-                                 "The error message is '" + e.message + "'", "error");
+                                 "The error message is '" + e2.message + "'", "error");
                         }
 
                         // Current implementation.
@@ -262,6 +293,7 @@ YUI.add("module-manager", function (Y) {
             // The prefix must be identical with module ID.
             if (name.indexOf(":") !== -1) {
                 if (name.split(":")[0] !== id) {
+                    alert(name.split(":")[0] + " / " + id);
                     _log("addBroadcaster() - The assigned ID ('" + name + "') " +
                          "is not identical with current module id.", "warn");
                     return false;
@@ -401,6 +433,7 @@ YUI.add("module-manager", function (Y) {
 
             if (!module.get("ready")) {
                 _waitTotal += 1;
+                _queueModules.push(selector);
                 Y.on("contentready", _handleModuleReady, selector, module, that);
             }
         },
