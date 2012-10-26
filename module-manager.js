@@ -293,7 +293,6 @@ YUI.add("module-manager", function (Y) {
             // The prefix must be identical with module ID.
             if (name.indexOf(":") !== -1) {
                 if (name.split(":")[0] !== id) {
-                    alert(name.split(":")[0] + " / " + id);
                     _log("addBroadcaster() - The assigned ID ('" + name + "') " +
                          "is not identical with current module id.", "warn");
                     return false;
