@@ -242,6 +242,11 @@ YUI.add("module", function (Y) {
 
             config = config || {};
 
+            if (config.hasView !== false && !config.selector) {
+                _log("initialiser() - You must provide selector attribute.", "error");
+                return;
+            }
+
             // Execute module initializer.
             init = config.init || function () {};
             _manager.register(that);
