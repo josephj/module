@@ -224,7 +224,7 @@ YUI.add("module-manager", function (Y) {
                     module = listeners[i];
 
                     // Check if this module has subscribe the message.
-                    shortName = name.split(":")[1];
+                    shortName = (name.indexOf(":") !== -1) ? name.split(":")[1] : name;
                     if (!module[name] && !module[shortName]) {
                         continue;
                     }
@@ -261,7 +261,7 @@ YUI.add("module-manager", function (Y) {
 
                         // Current implementation.
                         modules[i].fire("message", {
-                            name: name,
+                            name: shortName,
                             id: id,
                             data: data
                         });
@@ -269,7 +269,7 @@ YUI.add("module-manager", function (Y) {
 
                 }
             }
-            _log(id + ":" + name + " -> " + cached.join(", "));
+            _log(name + " -> " + cached.join(", "));
         },
         /**
          * Register a broadcasting message in manager.
