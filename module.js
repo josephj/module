@@ -142,8 +142,8 @@ YUI.add("module", function (Y) {
             value: [],
             validator: Lang.isArray,
             getter: function () {
-                var id = this.get("id");
-                _manager.get("listeners")[id];
+                var selector = this.get("selector");
+                return _manager.get("listeners")[selector];
             },
             readOnly: true
         }
