@@ -128,4 +128,13 @@ YUI.add("module-intl", function (Y) {
 
     Y.Module = Y.Base.mix(Y.Module, [ModuleIntl]);
 
-}, "0.0.1", {requires: ["base-build", "module", "intl", "substitute"]});
+}, "0.0.1", {
+    "group"    : "mui",
+    "js"       : "module/module-intl.js",
+    "requires" : [
+        "base-build",
+        "module",
+        "intl",
+        "substitute"
+    ]
+});

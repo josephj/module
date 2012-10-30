@@ -275,4 +275,13 @@ YUI.add("module", function (Y) {
         }
     });
     Y.Module = Module;
-}, "0.0.1", {requires: ["base", "node-base", "event-base", "module-manager"]});
+}, "0.0.1", {
+    "group"    : "mui",
+    "js"       : "module/module.js",
+    "requires" : [
+        "base",
+        "node-base",
+        "event-base",
+        "module-manager"
+    ]
+});

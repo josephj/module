@@ -459,4 +459,10 @@ YUI.add("module-manager", function (Y) {
     }
     Y.ModuleManager = window.ModuleManager;
 
-}, "0.0.1", {requires: ["base"]});
+}, "0.0.1", {
+    "group"    : "mui",
+    "js"       : "module/module-manager.js",
+    "requires" : [
+        "base"
+    ]
+});
