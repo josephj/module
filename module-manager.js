@@ -251,7 +251,7 @@ YUI.add("module-manager", function (Y) {
                         try {
                             // Be compatible with previous version.
                             if (modules[i].onmessage) {
-                                modules[i].onmessage(name, id, data);
+                                modules[i].onmessage(shortName, id, data);
                             }
                         } catch (e2) {
                             _log("_match('" + shortName + "', '" + id + "') fails - " +
