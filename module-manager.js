@@ -80,6 +80,10 @@ YUI.add("module-manager", function (Y) {
             module.fire("viewload");
         } catch (e) {
             _log(e.message, "warn");
+            Y.error(e.message, e, {
+                "module": module.get("selector"),
+                "fnName": "viewload"
+            });
         }
 
         // Remove module from _queueModules.
@@ -244,6 +248,11 @@ YUI.add("module-manager", function (Y) {
                              "- Error occurs in " + i + " module's " +
                              "listen callback method. The error message " +
                              "is '" + e.message + "'", "error");
+                        Y.error(e.message, e, {
+                            "module": i,
+                            "fnName": "listen",
+                            "continue": true
+                        });
                     }
 
                     if (i !== "*") {
@@ -257,6 +266,11 @@ YUI.add("module-manager", function (Y) {
                             _log("_match('" + shortName + "', '" + id + "') fails - " +
                                  "Error occurs in " + i + " module's onmessage method. " +
                                  "The error message is '" + e2.message + "'", "error");
+                            Y.error(e2.message, e2, {
+                                "module": i,
+                                "fnName": "onmessage",
+                                "continue": true
+                            });
                         }
 
                         // Current implementation.
@@ -393,6 +407,7 @@ YUI.add("module-manager", function (Y) {
          */
         register: function (module) {
             var that = this,
+                msg,
                 modules = that.get("modules"),
                 selector = module.get("selector");
 
@@ -401,9 +416,12 @@ YUI.add("module-manager", function (Y) {
             try {
                 module.get("init").call(module, module);
             } catch (e) {
-                _log("register() - module registers fails because " +
-                     "'" + e.message + "'", "error");
-                return;
+                msg = "Error occurs in " + selector + " module's " +
+                      "init attribute because '" + e.message + "'";
+                Y.error(msg, e, {
+                    "module": selector,
+                    "fnName": "init"
+                });
             }
 
             // Add this module to manager's 'modules' attribute.
