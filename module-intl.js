@@ -9,7 +9,7 @@
 YUI.add("module-intl", function (Y) {
 
     var _log,
-        MODULE_ID = "Y.ModuleIntl";
+        MODULE_ID = "module-intl";
 
     /**
      * A convenient alias method for Y.log(<msg>, "info", "Y.Module");

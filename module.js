@@ -10,7 +10,7 @@ YUI.add("module", function (Y) {
         //===========================
         // Constants
         //===========================
-        MODULE_ID = "Y.Module",
+        MODULE_ID = "module",
         //===========================
         // Private Methods
         //===========================

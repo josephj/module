@@ -22,7 +22,7 @@ YUI.add("module-manager", function (Y) {
         //===========================
         // Constants
         //===========================
-        MODULE_ID = "Y.ModuleManager",
+        MODULE_ID = "module-manager",
         POLL_INTERVAL = 100,
         RETRY_COUNT = 10,
         //===========================
@@ -35,22 +35,30 @@ YUI.add("module-manager", function (Y) {
 
     _checkReady = function () {
         _log("_checkReady() is executed.");
-        var that = this;
+        var that = this,
+            ready = that.get("ready");
+
+        if (Y.Object.size(that.get("modules"))) {
+            that._set("ready", true);
+            return;
+        }
 
         // Both DOM and module are not ready.
-        if (!that.get("ready") && !_hasDOMReady) {
+        if (!ready && !_hasDOMReady) {
+            _log("_checkReady() - Both DOM and module aren't ready.", "warn");
             Y.later(POLL_INTERVAL, that, _checkReady);
             return;
         }
 
-        // DOM is ready but not ready RETRY_COUNT.
-        if (!that.get("ready") && _hasDOMReady && RETRY_COUNT !== 0) {
+        // DOM is ready but not finish RETRY_COUNT.
+        if (!ready && _hasDOMReady && RETRY_COUNT !== 0) {
+            _log("_checkReady() - DOM is ready but not finish RETRY_COUNT.", "warn");
             Y.later(POLL_INTERVAL, that, _checkReady);
             RETRY_COUNT -= 1;
             return;
         }
 
-        if (_hasDOMReady && _waitTotal > 0 && !that.get("ready")) {
+        if (_hasDOMReady && _waitTotal > 0 && !ready) {
             _log("_checkReady() - Start module platform without waiting " +
                  "every module ready. (" + _queueModules.join(", ") + ")", "warn");
             that._set("ready", true);
@@ -464,6 +472,12 @@ YUI.add("module-manager", function (Y) {
             _log("startAll() is executed. The manager starts all registered module.");
             var that = this,
                 modules = that.get("modules");
+
+            if (!Y.Object.size(modules)) {
+                _log("startAll() is stopped because there are no registered modules.", "warn");
+                that._set("ready", true);
+                return;
+            }
 
             Y.each(modules, function (module) {
                 that.start(module);
