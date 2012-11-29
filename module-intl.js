@@ -88,6 +88,7 @@ YUI.add("module-intl", function (Y) {
                 trans,   // The translation strings in same module.
                 tag,     // The language tag.
                 text,
+                result,
                 id,      // The module ID. It could also be class name.
                 module;  // The language module.
 
@@ -122,7 +123,13 @@ YUI.add("module-intl", function (Y) {
                 return value;
             }
 
-            return (token) ? Y.substitute(text, token) : text;
+            result = (token) ? Y.substitute(text, token) : text;
+            // Temp fix for NETGEAR CES demo.
+            if (window.location.host.toLowerCase().indexOf("netgear") !== -1) {
+                result = result.replace(/miiiCasa/g, "NETGEAR");
+                result = result.replace(/miiicasa/g, "netgear");
+            }
+            return result;
         }
     };
 
