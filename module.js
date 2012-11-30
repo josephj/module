@@ -60,7 +60,7 @@ YUI.add("module", function (Y) {
          */
         hasView: {
             value: true,
-            validator: Y.Lang.isBoolean,
+            validator: Lang.isBoolean,
             writeOnce: true
         },
         /**
@@ -82,7 +82,7 @@ YUI.add("module", function (Y) {
          */
         init: {
             value: null,
-            validator: Y.Lang.isFunction,
+            validator: Lang.isFunction,
             writeOnce: true
         },
         /**
@@ -106,9 +106,9 @@ YUI.add("module", function (Y) {
          */
         on: {
             value: {},
-            validator: Y.Lang.isObject,
+            validator: Lang.isObject,
             setter: function (o) {
-                if (!Y.Lang.isObject(o)) {
+                if (!Lang.isObject(o)) {
                     return false;
                 }
                 Y.each(o, function (value, key) {
@@ -227,6 +227,34 @@ YUI.add("module", function (Y) {
             type = type || "info";
             module = module || that.get("selector");
             Y.log(msg, type, module);
+        },
+        /**
+         * A convenient method for throwing a new error.
+         *
+         * @method error
+         * @public
+         * @param msg {String} The error message.
+         * @param needTerminate {Boolean} Whether to continue operation.
+         *                                It will re-throw error if it's true.
+         * @param data {Object} The extra data you want to tell server.
+         */
+        error: function (msg, data, needTerminate) {
+            var that = this,
+                module;
+
+            data = data || {};
+            needTerminate = needTerminate || true;
+            module = module || that.get("selector");
+
+            if (!Lang.isString(msg) || !Lang.isObject(data) || !Lang.isBoolean(needTerminate)) {
+                _log("The parameter type error in error method.", "error");
+                return;
+            }
+
+            Y.error(msg, data, {
+                "module": module,
+                "continue": !needTerminate
+            });
         },
         /**
          * Initialize the module instance.
