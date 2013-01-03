@@ -51,27 +51,17 @@ YUI.add("module-analytics", function (Y) {
      */
     function ModuleAnalytics() {}
 
-    ModuleAnalytics.ATTRS = {
-        "account": {
-            getter: function () {
-                var tracker = window._gaq._getTrackerByName();
-                return tracker._getAccount();
-            },
-            readOnly: true
-        }
-    };
-
     ModuleAnalytics.prototype = {
         /**
          * Track an event for Google Analytics.
          *
          * @method trackEvent
          * @public
-         * @param category {String} The name you supply for the group of objects you want to track.
-         * @param action {String} A string that is uniquely paired with each category, and commonly used to define the type of user interaction for the web object.
-         * @param label {String} An optional string to provide additional dimensions to the event data.
-         * @param value {String} An integer that you can use to provide numerical data about the user event.
-         * @param noninteraction {String} A boolean that when set to true, indicates that the event hit will not be used in bounce-rate calculation.
+         * @param category {String} The group of objects you want to track.
+         * @param action {String} The ype of user interaction for the object.
+         * @param label {String} Provide additional dimensions to the event data. (Optional)
+         * @param value {String} Provide numerical data about the user event. (Optional)
+         * @param noninteraction {String} true if indicates that the event hit will not be used in bounce-rate calculation.
          * @return {Boolean} false if GA doesn't exist.
          */
         trackEvent: function (category, action, label, value, noninteraction) {
