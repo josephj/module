@@ -14,7 +14,7 @@ YUI.add("module-analytics", function (Y) {
         MODULE_ID = "module-analytics";
 
     /**
-     * A convenient alias method for Y.log(<msg>, "info", "Y.Module");
+     * A convenient alias method for Y.log(<msg>, "info", "module-analytics");
      *
      * @method _log
      * @private
