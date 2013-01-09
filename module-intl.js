@@ -70,7 +70,7 @@ YUI.add("module-intl", function (Y) {
             value: null,
             validator: Y.Lang.isObject
         },
-        trasReplace: {
+        transReplace: {
             valueFn: function () {
                 var hostname = window.location.host.toLowerCase(),
                     value = [];
@@ -80,7 +80,7 @@ YUI.add("module-intl", function (Y) {
                         {from: /miiicasa/g, to: "netgear"}
                     ];
                 }
-                return Y.config.transReplace || value;
+                return value || Y.config.transReplace;
             },
             validator: Y.Lang.isArray
         }
