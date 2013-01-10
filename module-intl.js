@@ -72,15 +72,8 @@ YUI.add("module-intl", function (Y) {
         },
         transReplace: {
             valueFn: function () {
-                var hostname = window.location.host.toLowerCase(),
-                    value = [];
-                if (hostname.indexOf("netgear") !== -1) {
-                    value = [
-                        {from: /miiiCasa/g, to: "NETGEAR"},
-                        {from: /miiicasa/g, to: "netgear"}
-                    ];
-                }
-                return value || Y.config.transReplace;
+                var replace = Y.config.transReplace;
+                return (replace && Y.Lang.isArray(replace)) ? replace : [];
             },
             validator: Y.Lang.isArray
         }
