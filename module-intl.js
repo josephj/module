@@ -1,4 +1,4 @@
-/*global YUI */
+/*global YUI, window */
 /**
  * An extension for Y.Module which lets
  * module instance can get translation strings.
@@ -69,6 +69,13 @@ YUI.add("module-intl", function (Y) {
         trans: {
             value: null,
             validator: Y.Lang.isObject
+        },
+        transReplace: {
+            valueFn: function () {
+                var replace = Y.config.transReplace;
+                return (replace && Y.Lang.isArray(replace)) ? replace : [];
+            },
+            validator: Y.Lang.isArray
         }
     };
 
@@ -125,11 +132,10 @@ YUI.add("module-intl", function (Y) {
             }
 
             result = (token) ? Y.substitute(text, token) : text;
-            // Temp fix for NETGEAR CES demo.
-            if (window.location.host.toLowerCase().indexOf("netgear") !== -1) {
-                result = result.replace(/miiiCasa/g, "NETGEAR");
-                result = result.replace(/miiicasa/g, "netgear");
-            }
+
+            Y.each(that.get("transReplace"), function (o) {
+                result = result.replace(o.from, o.to);
+            });
             return result;
         }
     };
