@@ -120,6 +120,7 @@ YUI.add("module-intl", function (Y) {
             if (!text) {
                 _log("getTrans() - This language key '" + key +
                      "' has not been translated yet.", "warn");
+                value = (token) ? Y.substitute(value, token) : value;
                 return value;
             }
 
