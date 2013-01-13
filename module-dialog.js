@@ -55,15 +55,14 @@ YUI.add("module-dialog", function (Y) {
      * @private
      */
     _setMarkup = function (node) {
-        var n;
-        if (n = node.one(".hd")) {
-            n.addClass(WIDGET_CLASS_PREFIX + "hd");
+        if (node.one(".hd")) {
+            node.one(".hd").addClass(WIDGET_CLASS_PREFIX + "hd");
         }
-        if (n = node.one(".bd")) {
-            n.addClass(WIDGET_CLASS_PREFIX + "bd");
+        if (node.one(".bd")) {
+            node.one(".bd").addClass(WIDGET_CLASS_PREFIX + "bd");
         }
-        if (n = node.one(".ft")) {
-            n.addClass(WIDGET_CLASS_PREFIX + "ft");
+        if (node.one(".ft")) {
+            node.one(".ft").addClass(WIDGET_CLASS_PREFIX + "ft");
         }
     };
 
@@ -142,13 +141,15 @@ YUI.add("module-dialog", function (Y) {
          * @readOnly
          */
         panel: {
-           value: null,
-           readOnly: true
+            value: null,
+            readOnly: true
         }
     };
 
     ModuleDialog.prototype = {
         /**
+         * Specify the content node of your module.
+         *
          * @property CONTENT_NODE
          * @type String | Node
          * @default ".mod-content"
@@ -331,7 +332,7 @@ YUI.add("module-dialog", function (Y) {
                 node,
                 panel;
 
-            // Transform existing module to dialog.
+            // Transform module to dialog.
             node = Y.one(that.get("selector"));
             _setMarkup(node);
             attr = Y.merge(DEFAULT_ATTR, {
