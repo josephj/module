@@ -2,103 +2,204 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta name="created" content="2012-08-16">
-<title>Module Prototype</title>
-<link rel="stylesheet" href="http://yui.yahooapis.com/3.6.0/build/cssreset/reset-min.css">
-<link rel="stylesheet" href="http://yui.yahooapis.com/3.6.0/build/cssfonts/fonts-min.css">
-<link rel="stylesheet" href="http://yui.yahooapis.com/3.6.0/build/cssbutton/cssbutton.css">
-<link rel="stylesheet" href="http://a.mimgs.com/lib/mui/base/base.css">
-<link rel="stylesheet" href="http://yui.yahooapis.com/3.6.0/build/cssfonts/fonts-min.css">
+<title>Module Dialog</title>
+<link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssreset/reset-min.css">
+<link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssfonts/fonts-min.css">
+<link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssbutton/cssbutton.css">
+<link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssfonts/fonts-min.css">
 <link rel="stylesheet" href="http://a.mimgs.com/lib/mui/cssbutton/assets/skins/miiicasa/cssbutton-skin.css">
+<style type="text/css">
+body {
+    padding: 10px;
+}
+h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.mod {
+    border: solid 1px #ccc;
+    margin-bottom: 20px;
+    width: 640px;
+}
+.mod .mod-content {
+    padding: 0 10px;
+}
+.mod h2,
+.mod h3 {
+    margin: 10px 0;
+    font-weight: bold;
+}
+.mod h2 {
+    font-size: 20px;
+}
+.mod h3 {
+    font-size: 16px;
+}
+.mod li {
+    margin-bottom: 10px;
+}
+.mod pre {
+    background: #eee;
+    border: solid 1px #ccc;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+.mod .ft {
+    padding: 0 5px 10px;
+    font-size: 16px;
+}
+#bar h2 {
+    margin: 0;
+}
+</style>
 <link rel="stylesheet" href="panel.css">
 <script src="http://yui.yahooapis.com/3.6.0/build/yui/yui-min.js"></script>
 <script src="../module.js"></script>
 <script src="../module-manager.js"></script>
 <script src="../module-dialog.js"></script>
-<style type="text/css">
-.mod {
-    border: solid 1px #ccc;
-    float: left;
-}
-</style>
+<script>
+YUI.add("_foo", function (Y) {
+    var module, // The module instance.
+        node;   // The actual node.
+
+    module = new Y.Module({
+        selector: "#foo",
+        init: function () {}
+    });
+
+    module.on("viewload", function (e) {
+        node = this.getViewNode();
+        node.one(".alert-button").on("click", function (e) {
+            module.alert("Hello World!");
+        });
+        node.one(".confirm-button").on("click", function (e) {
+            module.confirm("Are you sure?", function (result) {
+                module.log(result);
+            });
+        });
+        node.one(".custom-confirm-button").on("click", function (e) {
+            var attr = {
+                "title"   : "Please make sure",
+                "content" : "Are you sure to delete these files?"
+            };
+            module.confirm(attr, function (result) {
+                module.log(result);
+            });
+        });
+        node.one(".show-dialog-link").on("click", function (e) {
+            e.preventDefault();
+            module.broadcast("show-dialog");
+        });
+    });
+
+}, "0.0.1", {
+    "requires": [
+        "module",
+        "module-dialog"
+    ]
+});
+
+YUI.add("_bar", function (Y) {
+    var module, // The module instance.
+        node;   // The actual node.
+
+    module = new Y.Module({
+        selector: "#bar",
+        dialog: true,
+        init: function () {
+            this.listen("show-dialog", function () {
+                module.show();
+            });
+        }
+    });
+
+}, "0.0.1", {
+    "requires": [
+        "module",
+        "module-dialog"
+    ]
+});
+
+YUI({
+    fetchCSS: false,
+    logInclude: {
+        "#foo": true,
+        "#bar": true
+    },
+    groups: {
+        myapp: {
+            filter: "raw",
+            base: "//lab.josephj.com/2013/",
+            modules : {
+                "module" : {
+                    lang: ["en-US", "zh-TW"]
+                },
+            }
+        }
+    }
+}).use("_foo", "_bar", "module-manager", function (Y) {
+    var manager = new Y.ModuleManager();
+    manager.startAll();
+});
+</script>
 </head>
 <body class="yui3-skin-miiicasa">
 
+    <h1>Module Dialog Examples</h1>
+
+    <!-- #foo (start) -->
     <div id="foo" class="mod">
         <div class="mod-content">
-            <div class="hd"><h2>#foo</h2></div>
+            <div class="hd">
+                <h2>#foo</h2>
+            </div>
             <div class="bd">
-                <button class="alert">module.alert();</button>
-                <button class="confirm">module.confirm();</button>
-                <button class="confirm2">module.confirm();</button>
-                <button class="open">module.open();</button>
+                <ul>
+                    <li>
+                        <h3>alert</h3>
+                        <pre><code>module.alert("Hello World!");</code></pre>
+                        <button class="alert-button">Execute</button>
+                    </li>
+                    <li>
+                        <h3>confirm</h3>
+                        <pre><code>module.confirm("Are you sure?", function (result) {
+    module.log(result);
+});</code></pre>
+                        <button class="confirm-button">Execute</button>
+                    </li>
+                    <li>
+                        <h3>confirm (custom)</h3>
+                        <pre><code>var attr = {
+    title: "Please make sure",
+    content: "Are you sure to delete these files?"
+};
+module.confirm(attr, function (result) {
+    module.log(result);
+});</code></pre>
+                        <button class="custom-confirm-button">Execute</button>
+                    </li>
+                </ul>
+            </div>
+            <div class="ft">
+                <a href="javascript:void();" class="show-dialog-link">Show #bar module</a>
             </div>
         </div>
     </div>
+    <!-- #foo (end) -->
 
-    <script>
-    YUI.add("_foo", function (Y) {
-        var module = new Y.Module({
-            selector: "#foo",
-            dialog: true,
-            init: function () {
-                Y.log("init", "info", "_foo");
-            },
-            on: {
-                viewload: function () {
-                    Y.log("viewload", "info", "_foo");
-                }
-            }
-        });
-module.show();
-        Y.one(".alert").on("click", function (e) {
-            module.alert("hihi", function () {
-                Y.log("alert callback");
-            });
-            e.preventDefault();
-        });
-        Y.one(".confirm").on("click", function (e) {
-            module.confirm("hihi", function (result) {
-                Y.log(result);
-            });
-            e.preventDefault();
-        });
-        Y.one(".confirm2").on("click", function (e) {
-            var attr = {"title": "Custom Title", "content": "Custom Content..."};
-            module.confirm(attr, function (result) {
-                Y.log(result);
-            });
-            e.preventDefault();
-        });
-        Y.one(".open").on("click", function (e) {
-            e.preventDefault();
-        });
-    }, "0.0.1", {
-        "requires": [
-            "module",
-            "module-dialog"
-        ]
-    });
-
-    YUI({
-        fetchCSS: false,
-        lang: "zh-TW",
-        groups: {
-            myapp: {
-                filter: "raw",
-                base: "//lab.josephj.com/2013/",
-                modules : {
-                    "module" : {
-                        lang: ["en-US", "zh-TW"]
-                    },
-                }
-            }
-        }
-    }).use("_foo", "module-manager", function (Y) {
-        var manager = new Y.ModuleManager();
-        manager.startAll();
-    });
-    </script>
+    <!-- #bar (start) -->
+    <div id="bar" class="mod">
+        <div class="mod-content">
+            <div class="hd">
+                <h2>#bar</h2>
+            </div>
+            <div class="bd">
+                <p>A module with dialog:true config attribute.</p>
+            </div>
+        </div>
+    </div>
+    <!-- #bar (end) -->
 
 </body>
 </html>
