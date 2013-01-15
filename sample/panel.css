@@ -11,8 +11,7 @@
 .yui3-panel {
     background: #fff;
     border: solid 1px #ccc;
-    width: 410px;
-    min-width: 410px;
+    min-width: 400px;
     position: absolute;
     top: -9999px;
     -moz-border-radius: 5px;
@@ -83,7 +82,11 @@
 .yui3-panel .yui3-panel-content .yui3-widget-ft {
     text-align: center;
     padding: 5px 0;
+    margin-bottom: 10px;
 }
 .yui3-panel .yui3-panel-content .yui3-widget-ft .yui3-button {
-    margin: 0 2px;
+    margin-right: 10px;
+}
+.yui3-panel .yui3-panel-content .yui3-widget-ft .yui3-button:last-child {
+    margin-right: 0;
 }
