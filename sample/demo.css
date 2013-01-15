@@ -1,0 +1,47 @@
+body {
+    padding: 10px;
+}
+h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.mod {
+    border: solid 1px #ccc;
+    margin-bottom: 20px;
+    width: 640px;
+}
+.mod .mod-content {
+    padding: 0 10px;
+}
+.mod h2,
+.mod h3 {
+    margin: 10px 0;
+    font-weight: bold;
+}
+.mod h2 {
+    font-size: 20px;
+}
+.mod h3 {
+    font-size: 16px;
+}
+.mod li {
+    margin-bottom: 10px;
+}
+.mod pre {
+    background: #eee;
+    border: solid 1px #ccc;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+.mod .ft {
+    padding: 0 5px 10px;
+    font-size: 16px;
+}
+.mod code {
+    font-family: "Courier New";
+    line-height: 1.5;
+}
+#bar h2 {
+    margin: 0;
+}

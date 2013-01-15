@@ -2,63 +2,25 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Module Dialog</title>
+<title>Module Dialog Example</title>
+<!-- YUI CSS foundation -->
 <link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssreset/reset-min.css">
 <link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssfonts/fonts-min.css">
+<!-- Button skin which dialog needs -->
 <link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssbutton/cssbutton.css">
-<link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssfonts/fonts-min.css">
 <link rel="stylesheet" href="http://a.mimgs.com/lib/mui/cssbutton/assets/skins/miiicasa/cssbutton-skin.css">
-<style type="text/css">
-body {
-    padding: 10px;
-}
-h1 {
-    font-size: 32px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-.mod {
-    border: solid 1px #ccc;
-    margin-bottom: 20px;
-    width: 640px;
-}
-.mod .mod-content {
-    padding: 0 10px;
-}
-.mod h2,
-.mod h3 {
-    margin: 10px 0;
-    font-weight: bold;
-}
-.mod h2 {
-    font-size: 20px;
-}
-.mod h3 {
-    font-size: 16px;
-}
-.mod li {
-    margin-bottom: 10px;
-}
-.mod pre {
-    background: #eee;
-    border: solid 1px #ccc;
-    padding: 5px;
-    margin-bottom: 5px;
-}
-.mod .ft {
-    padding: 0 5px 10px;
-    font-size: 16px;
-}
-#bar h2 {
-    margin: 0;
-}
-</style>
+<!-- Style for this page -->
+<link rel="stylesheet" href="demo.css">
+<!-- miiiCasa dialog skin -->
 <link rel="stylesheet" href="panel.css">
+<!-- YUI seed file -->
 <script src="http://yui.yahooapis.com/3.6.0/build/yui/yui-min.js"></script>
+<!-- Required module core and extensions -->
 <script src="../module.js"></script>
 <script src="../module-manager.js"></script>
 <script src="../module-dialog.js"></script>
 <script>
+// #foo (start)
 YUI.add("_foo", function (Y) {
     var module, // The module instance.
         node;   // The actual node.
@@ -99,12 +61,12 @@ YUI.add("_foo", function (Y) {
         "module-dialog"
     ]
 });
+// #foo (end)
 
+// #bar (start)
 YUI.add("_bar", function (Y) {
-    var module, // The module instance.
-        node;   // The actual node.
 
-    module = new Y.Module({
+    var module = new Y.Module({
         selector: "#bar",
         dialog: true,
         init: function () {
@@ -120,13 +82,11 @@ YUI.add("_bar", function (Y) {
         "module-dialog"
     ]
 });
+// #bar (end)
 
 YUI({
-    fetchCSS: false,
-    logInclude: {
-        "#foo": true,
-        "#bar": true
-    },
+    fetchCSS: false, // Use our own style instead default yui3-skin-sam.
+    // Define the custom group for loading translation files.
     groups: {
         myapp: {
             filter: "raw",
@@ -134,7 +94,7 @@ YUI({
             modules : {
                 "module" : {
                     lang: ["en-US", "zh-TW"]
-                },
+                }
             }
         }
     }
@@ -146,7 +106,7 @@ YUI({
 </head>
 <body class="yui3-skin-miiicasa">
 
-    <h1>Module Dialog Examples</h1>
+    <h1>Module Dialog Example</h1>
 
     <!-- #foo (start) -->
     <div id="foo" class="mod">
@@ -157,12 +117,12 @@ YUI({
             <div class="bd">
                 <ul>
                     <li>
-                        <h3>alert</h3>
+                        <h3>alert (Try <a href="javascript:window.alert('Hello World!');">window.alert</a>)</h3>
                         <pre><code>module.alert("Hello World!");</code></pre>
                         <button class="alert-button">Execute</button>
                     </li>
                     <li>
-                        <h3>confirm</h3>
+                        <h3>confirm (Try <a href="javascript:window.confirm('Are you sure?');">window.confirm</a>)</h3>
                         <pre><code>module.confirm("Are you sure?", function (result) {
     module.log(result);
 });</code></pre>
@@ -196,6 +156,7 @@ module.confirm(attr, function (result) {
             </div>
             <div class="bd">
                 <p>A module with dialog:true config attribute.</p>
+                <p>You can put anything here.</p>
             </div>
         </div>
     </div>
