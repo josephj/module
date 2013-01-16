@@ -1,14 +1,14 @@
-.yui3-skins-miiicasa .yui3-panel-hidden {
+.yui3-skin-miiicasa .yui3-panel-hidden {
     visibility: hidden;
 }
-.yui3-skins-miiicasa .yui3-panel-focused {
+.yui3-skin-miiicasa .yui3-panel-focused {
     outline: 0;
 }
-.yui3-skins-miiicasa .yui3-widget-mask {
+.yui3-skin-miiicasa .yui3-widget-mask {
     background: #000;
     opacity: 0.6;
 }
-.yui3-skins-miiicasa .yui3-panel {
+.yui3-skin-miiicasa .yui3-panel {
     background: #fff;
     border: solid 1px #ccc;
     width: 410px;
@@ -26,14 +26,14 @@
     -o-box-shadow: #333333 2px 2px 4px;
     box-shadow: #333333 2px 2px 4px;
 }
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content {
+.yui3-skin-miiicasa .yui3-panel .yui3-panel-content {
     padding: 10px;
     background: #fff;
     z-index: 2;
     position: relative;
     text-align: left;
 }
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-hd {
+.yui3-skin-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-hd {
     height: 20px;
     padding: 5px 10px;
     background: #393939;
@@ -51,14 +51,14 @@
     -khtml-border-top-right-radius: 3px;
     border-top-right-radius: 3px;
 }
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-hd {
+.yui3-skin-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-hd {
 
     color: white;
     font-size: 146.5%;
     font-weight: bold;
     position: relative;
 }
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-hd .yui3-button {
+.yui3-skin-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-hd .yui3-button {
     background: url(http://a.mimgs.com/index/common/btn_mod_popup_close.png) 0 0 no-repeat;
     border: none;
     font-size: 0;
@@ -72,18 +72,18 @@
     top: 11px;
     width: 11px;
 }
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-hd,
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-bd,
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-ft {
+.yui3-skin-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-hd,
+.yui3-skin-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-bd,
+.yui3-skin-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-ft {
     margin-bottom: 20px;
 }
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-bd .content {
+.yui3-skin-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-bd .content {
     padding: 0 20px;
 }
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-ft {
+.yui3-skin-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-ft {
     padding: 5px 0;
     text-align: center;
 }
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-ft .yui3-button {
+.yui3-skin-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-ft .yui3-button {
     margin: 0 2px;
 }
