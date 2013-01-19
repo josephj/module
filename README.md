@@ -91,7 +91,15 @@ Developer can choose to require the extensions they need to have more useful att
     module.alert(<msg>, <callback>);
     module.confirm(<msg>, <callback>);
     ```
+  * You can even transform the module itself to a dialog.      
     
+    ```javascript
+    new Y.Module({
+        selector: "#foo",
+        dialog: true
+    });
+    ```
+
 ## Examples
 
 ### JavaScript Modular Platform
@@ -102,6 +110,13 @@ I will update it recently.
 
 * URL: http://josephj.com/project/javascript-platform-yui-demo/
 * Github: https://github.com/josephj/javascript-platform-yui-demo
+
+### ModuleDialog Extension
+
+A very convenient way to create custom alert and confirm UIs.
+
+* URL: http://lab.josephj.com/2013/module/sample/demo-dialog.html
+* GitHub: https://github.com/miiicasa/module/blob/master/sample/demo-dialog.html
 
 ## Questions?
 
