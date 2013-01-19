@@ -80,6 +80,27 @@ Developer can choose to require the extensions they need to have more useful att
     module.confirm(<msg>, <callback>);
     ```
     
-## Page-level Control
+### Page-level Control
+
+Sometimes you may need to implement a feature that doesn't belongs to any view module.
+However, you still want to use the listen/broadcast model to make interaction between different modules.
+Y.ModuleManager is the right one to help.
+
+```javascript
+var manager = new Y.ModuleManager(attrs); // It's a singleton. All instances are the same.
+manager.broadcast("playing", data);
+manager.listen("seek", handler)
+```
+
+## Examples
+
+### JavaScript Modular Platform
+
+This example shows the concept of cross-module interactions.
+Be aware the library used there is the elder version. 
+I will update it recently.
+
+* URL: http://josephj.com/project/javascript-platform-yui-demo/
+* Github: https://github.com/josephj/javascript-platform-yui-demo
 
 
