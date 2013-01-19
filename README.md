@@ -58,6 +58,18 @@ This approach is great for loose coupling.
     });
     ```
 
+### Page-level Control
+
+Sometimes you may need to implement a feature that doesn't belongs to any view module.
+However, you still want to use the listen/broadcast model to make interaction between different modules.
+Y.ModuleManager is the right one to help.
+
+```javascript
+var manager = new Y.ModuleManager(attrs); // It's a singleton. All instances are the same.
+manager.broadcast("playing", data);
+manager.listen("seek", handler)
+```
+
 ### Extensible
 
 Developer can choose to require the extensions they need to have more useful attributes and methods.
@@ -80,18 +92,6 @@ Developer can choose to require the extensions they need to have more useful att
     module.confirm(<msg>, <callback>);
     ```
     
-### Page-level Control
-
-Sometimes you may need to implement a feature that doesn't belongs to any view module.
-However, you still want to use the listen/broadcast model to make interaction between different modules.
-Y.ModuleManager is the right one to help.
-
-```javascript
-var manager = new Y.ModuleManager(attrs); // It's a singleton. All instances are the same.
-manager.broadcast("playing", data);
-manager.listen("seek", handler)
-```
-
 ## Examples
 
 ### JavaScript Modular Platform
@@ -103,4 +103,13 @@ I will update it recently.
 * URL: http://josephj.com/project/javascript-platform-yui-demo/
 * Github: https://github.com/josephj/javascript-platform-yui-demo
 
+## Questions?
 
+Someone said I should use custom event (Y.fire and Y.on) to achieve cross-module communication. 
+Indeed it works but it only solves one problem. What this theory solves is about team work,
+you need to make some constrait to developer to prevent everyone can do something wild. 
+
+Also, I find it's a really great foundation for us to build necessary extensions. 
+It helps us to have swift methods and consistent UIs very easily.
+Sometimes it's dangerous that everyone calls native YUI or jQuery methods.
+It might produce thousands implementations for one simple feature.
