@@ -60,3 +60,26 @@ This approach is great for loose coupling.
 
 ### Extensible
 
+Developer can choose to require the extensions they need to have more useful attributes and methods.
+
+* module-intl - For translation.
+
+    ```javascript
+    module.getTrans(<key>, <default_string>);
+    ```
+* module-analytics - For Google Analytics.
+
+    ```javascript
+    module.trackPageView(<path>);
+    module.trackEvent(<category>, <action>, <label>);
+    ```
+* module-dialog - For custom dialogs.
+
+    ```javascript
+    module.alert(<msg>, <callback>);
+    module.confirm(<msg>, <callback>);
+    ```
+    
+## Page-level Control
+
+
