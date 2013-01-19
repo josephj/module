@@ -90,15 +90,15 @@ Developer can choose to require the extensions they need to have more useful att
     ```javascript
     module.alert(<msg>, <callback>);
     module.confirm(<msg>, <callback>);
-    ```
-  * You can even transform the module itself to a dialog.      
-    
-    ```javascript
-    new Y.Module({
-        selector: "#foo",
-        dialog: true
-    });
-    ```
+    ```    
+  * You can even transform the module itself to a dialog.
+
+        ```javascript
+        new Y.Module({
+            selector: "#foo",
+            dialog: true
+        });
+        ```
 
 ## Examples
 
