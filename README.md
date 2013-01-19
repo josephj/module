@@ -19,7 +19,7 @@ YUI.add("module1", function (Y) {
             // Initial settings.
         },
         on: {
-            // Triggers when the dom is contentready.
+            // Triggers when this dom element is contentready.
             viewload: function () {
                 module.log("viewload() is executed.");
                 var node = this.get("node");
@@ -60,16 +60,3 @@ This approach is great for loose coupling.
 
 ### Extensible
 
-
-
-Sandboxes can 'listen' for a specific message.
-While a sandbox broadcasts this specific message, 
-
-However, if it's necessary to have interaction between different sandboxes, 
-
-
-## Classes
-
-* Y.ModuleManager - A singleton to manage all sandbox instances. It matches listening and broadcasting sandboxes. 
-
-* Y.Module - It creates a sandbox instance.
