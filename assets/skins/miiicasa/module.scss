@@ -1,0 +1,75 @@
+@import "base";
+
+.yui3-skins-miiicasa {
+    .yui3-panel-hidden {
+        visibility: hidden;
+    }
+    .yui3-panel-focused {
+        outline: 0;
+    }
+    .yui3-widget-mask {
+        background: #000;
+        @include opacity(0.6);
+    }
+    .yui3-panel {
+        background: #fff;
+        border: solid 1px #ccc;
+        width: 410px;
+        min-width: 410px;
+        position: absolute;
+        top: -9999px;
+        @include border-radius(5px);
+        @include box-shadow(#333 2px 2px 4px);
+        .yui3-panel-content {
+            padding: 10px;
+            background: #fff;
+            z-index: 2;
+            position: relative;
+            text-align: left;
+            .yui3-widget-hd {
+                height: 20px;
+                padding: 5px 10px;
+                background: $header-bgcolor;
+                border-bottom: $header-border-bottom;
+                @include border-top-left-radius(3px);
+                @include border-top-right-radius(3px);
+                color: white;
+                font-size: 146.5%;
+                font-weight: bold;
+                position: relative;
+                h2 {
+                    font-weight: bold;
+                }
+                .yui3-button {
+                    background: url(http://a.mimgs.com/index/common/btn_mod_popup_close.png) 0 0 no-repeat;
+                    border: none;
+                    font-size: 0;
+                    text-shadow: none;
+                    height: 11px;
+                    outline: none;
+                    overflow: hidden;
+                    position: absolute;
+                    right: 10px;
+                    text-indent: -9999px;
+                    top: 11px;
+                    width: 11px;
+                }
+                margin-bottom: 20px;
+            }
+            .yui3-widget-bd, .yui3-widget-ft {
+                margin-bottom: 20px;
+            }
+            .yui3-widget-bd .content {
+                font-size: 123.1%;
+                padding: 0 20px;
+            }
+            .yui3-widget-ft {
+                padding: 5px 0;
+                text-align: center;
+                .yui3-button {
+                    margin: 0 2px;
+                }
+            }
+        }
+    }
+}

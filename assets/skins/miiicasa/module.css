@@ -6,6 +6,7 @@
 }
 .yui3-skins-miiicasa .yui3-widget-mask {
     background: #000;
+    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
     opacity: 0.6;
 }
 .yui3-skins-miiicasa .yui3-panel {
@@ -37,7 +38,7 @@
     height: 20px;
     padding: 5px 10px;
     background: #393939;
-    border-bottom: 5px solid #a5a5a5;
+    border-bottom: 5px solid #77cdd0;
     -moz-border-radius-topleft: 3px;
     -webkit-border-top-left-radius: 3px;
     -o-border-top-left-radius: 3px;
@@ -50,13 +51,14 @@
     -ms-border-top-right-radius: 3px;
     -khtml-border-top-right-radius: 3px;
     border-top-right-radius: 3px;
-}
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-hd {
-
     color: white;
     font-size: 146.5%;
     font-weight: bold;
     position: relative;
+    margin-bottom: 20px;
+}
+.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-hd h2 {
+    font-weight: bold;
 }
 .yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-hd .yui3-button {
     background: url(http://a.mimgs.com/index/common/btn_mod_popup_close.png) 0 0 no-repeat;
@@ -72,12 +74,11 @@
     top: 11px;
     width: 11px;
 }
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-hd,
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-bd,
-.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-ft {
+.yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-bd, .yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-ft {
     margin-bottom: 20px;
 }
 .yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-bd .content {
+    font-size: 123.1%;
     padding: 0 20px;
 }
 .yui3-skins-miiicasa .yui3-panel .yui3-panel-content .yui3-widget-ft {
