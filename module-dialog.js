@@ -28,6 +28,7 @@ YUI.add("module-dialog", function (Y) {
             zIndex  : 4
         },
         WIDGET_CLASS_PREFIX = "yui3-widget-",
+        DIALOG_CLASS = "yui3-module-dialog",
         MODULE_ID = "module-dialog",
         //===========================
         // Methods
@@ -55,6 +56,7 @@ YUI.add("module-dialog", function (Y) {
      * @private
      */
     _setMarkup = function (node) {
+        node.addClass(DIALOG_CLASS);
         if (node.one(".hd")) {
             node.one(".hd").addClass(WIDGET_CLASS_PREFIX + "hd");
         }
@@ -118,20 +120,11 @@ YUI.add("module-dialog", function (Y) {
          * @default false
          */
         visible: {
-            value: false,
-            setter: function (value) {
-                var that = this;
-                if (!that.get("panel")) {
-                    _log("The module's dialog attribute isn't set to true.");
-                    return;
-                }
-                if (value) {
-                    that.show();
-                } else {
-                    that.hide();
-                }
+            valueFn: function () {
+                return this.get("panel").get("visible");
             },
-            validator: Y.Lang.isBoolean
+            validator: Y.Lang.isBoolean,
+            readOnly: true
         },
         /**
          * When dialog is set to true, this will be the YUI Panel instance.
@@ -344,6 +337,13 @@ YUI.add("module-dialog", function (Y) {
             panel = that.create(attr);
             panel.get("hideOn").push({
                 eventName: "clickoutside"
+            });
+            panel.on("visibleChange", function (e) {
+                if (e.newVal) {
+                    panel._set("visible", true);
+                } else {
+                    panel._set("visible", false);
+                }
             });
             that._set("panel", panel);
         }
