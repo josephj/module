@@ -120,9 +120,7 @@ YUI.add("module-dialog", function (Y) {
          * @default false
          */
         visible: {
-            valueFn: function () {
-                return this.get("panel").get("visible");
-            },
+            value: false,
             validator: Y.Lang.isBoolean,
             readOnly: true
         },
