@@ -54,9 +54,8 @@
                     top: 11px;
                     width: 11px;
                 }
-                margin-bottom: 20px;
             }
-            .yui3-widget-bd, .yui3-widget-ft {
+            .yui3-widget-hd, .yui3-widget-bd, .yui3-widget-ft {
                 margin-bottom: 20px;
             }
             .yui3-widget-bd .content {
@@ -68,6 +67,21 @@
                 text-align: center;
                 .yui3-button {
                     margin: 0 2px;
+                }
+            }
+        }
+    }
+    .yui3-module-dialog-custom {
+        .yui3-panel-content {
+            .yui3-widget-hd, .yui3-widget-bd, .yui3-widget-ft {
+                margin-bottom: 10px;
+            }
+            .yui3-widget-hd {
+                background: #fff;
+                border-bottom: 0;
+                color: inherit;
+                .yui3-button {
+                    background: url(http://a.mimgs.com/index/common/btn_mvoverlay_close.png) 0 0 no-repeat;
                 }
             }
         }
