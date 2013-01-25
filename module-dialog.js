@@ -82,6 +82,7 @@ YUI.add("module-dialog", function (Y) {
         }
         attr.centered = true;
         _panel.setAttrs(attr);
+        _panel.get("boundingBox").addClass(DIALOG_CLASS);
         _panel.show();
     };
 
