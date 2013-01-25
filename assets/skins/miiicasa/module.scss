@@ -1,5 +1,9 @@
 @import "base";
 
+/*@import "compass";*/
+/*$header-bgcolor: #393939;*/
+/*$header-border-bottom: 5px solid #77cdd0;*/
+
 .yui3-skin-miiicasa {
     .yui3-panel-hidden {
         visibility: hidden;
@@ -74,14 +78,18 @@
     .yui3-module-dialog-custom {
         .yui3-panel-content {
             .yui3-widget-hd, .yui3-widget-bd, .yui3-widget-ft {
+                font-size: 100%;
+                font-weight: normal;
                 margin-bottom: 10px;
             }
             .yui3-widget-hd {
                 background: #fff;
                 border-bottom: 0;
                 color: inherit;
+                padding: 5px 0;
                 .yui3-button {
-                    background: url(http://a.mimgs.com/index/common/btn_mvoverlay_close.png) 0 0 no-repeat;
+                    background-image: url(http://a.mimgs.com/index/common/btn_mvoverlay_close.png);
+                    right: 3px;
                 }
             }
         }

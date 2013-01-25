@@ -285,17 +285,20 @@ YUI.add("module-dialog", function (Y) {
                 centered: true,
                 close: true,
                 render: true,
-                width: 680,
+                width: 660,
                 zIndex: 3
             }, attr);
 
-            var node = Y.Node.create(html);
+            var node = Y.Node.create(html),
+                panel;
             node.addClass(DIALOG_CLASS + "-custom");
             _setMarkup(node);
             attr.boundingBox = node;
             attr.contentBox = node.one(".mod-content");
 
-            return new Y.Panel(attr);
+            panel = new Y.Panel(attr);
+            panel.get("hideOn").push({"eventName": "clickoutside"});
+            return panel;
         },
         /**
          * Make the dialog visible.
@@ -358,11 +361,7 @@ YUI.add("module-dialog", function (Y) {
                 eventName: "clickoutside"
             });
             panel.on("visibleChange", function (e) {
-                if (e.newVal) {
-                    that._set("visible", true);
-                } else {
-                    that._set("visible", false);
-                }
+                    that._set("visible", e.newVal);
             });
             that._set("panel", panel);
         }

@@ -88,13 +88,17 @@
     margin: 0 2px;
 }
 .yui3-skin-miiicasa .yui3-module-dialog-custom .yui3-panel-content .yui3-widget-hd, .yui3-skin-miiicasa .yui3-module-dialog-custom .yui3-panel-content .yui3-widget-bd, .yui3-skin-miiicasa .yui3-module-dialog-custom .yui3-panel-content .yui3-widget-ft {
+    font-size: 100%;
+    font-weight: normal;
     margin-bottom: 10px;
 }
 .yui3-skin-miiicasa .yui3-module-dialog-custom .yui3-panel-content .yui3-widget-hd {
     background: #fff;
     border-bottom: 0;
     color: inherit;
+    padding: 5px 0;
 }
 .yui3-skin-miiicasa .yui3-module-dialog-custom .yui3-panel-content .yui3-widget-hd .yui3-button {
-    background: url(http://a.mimgs.com/index/common/btn_mvoverlay_close.png) 0 0 no-repeat;
+    background-image: url(http://a.mimgs.com/index/common/btn_mvoverlay_close.png);
+    right: 3px;
 }
