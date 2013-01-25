@@ -338,9 +338,9 @@ YUI.add("module-dialog", function (Y) {
             });
             panel.on("visibleChange", function (e) {
                 if (e.newVal) {
-                    panel._set("visible", true);
+                    that._set("visible", true);
                 } else {
-                    panel._set("visible", false);
+                    that._set("visible", false);
                 }
             });
             that._set("panel", panel);
