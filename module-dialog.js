@@ -269,11 +269,31 @@ YUI.add("module-dialog", function (Y) {
          * @public
          * @return {Y.Panel} The Panel instance.
          */
-        "create": function (attr) {
+        "_create": function (attr) {
             _log("create() is executed.");
             if (Y.Lang.isUndefined(attr.close)) {
                 attr.close = true;
             }
+            return new Y.Panel(attr);
+        },
+        "create": function (html, attr) {
+            _log("create() is executed.");
+            attr = attr || {};
+            attr = Y.merge({
+                modal: true,
+                centered: true,
+                close: true,
+                render: true,
+                width: 680,
+                zIndex: 3
+            }, attr);
+
+            var node = Y.Node.create(html);
+            node.addClass(DIALOG_CLASS + "-custom");
+            _setMarkup(node);
+            attr.boundingBox = node;
+            attr.contentBox = node.one(".mod-content");
+
             return new Y.Panel(attr);
         },
         /**
@@ -332,7 +352,7 @@ YUI.add("module-dialog", function (Y) {
                 visible: false,
                 zIndex: 3
             });
-            panel = that.create(attr);
+            panel = that._create(attr);
             panel.get("hideOn").push({
                 eventName: "clickoutside"
             });
