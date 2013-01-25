@@ -18,9 +18,9 @@
     .yui3-module-dialog {
         background: #fff;
         border: solid 1px #ccc;
+        position: absolute !important; // TODO - Figure out why it sometimes add relative by JavaScript.
         width: 410px;
         min-width: 410px;
-        position: absolute;
         top: -9999px;
         @include border-radius(5px);
         @include box-shadow(#333 2px 2px 4px);
@@ -28,7 +28,6 @@
             padding: 10px;
             background: #fff;
             z-index: 2;
-            position: relative;
             text-align: left;
             .yui3-widget-hd {
                 height: 20px;

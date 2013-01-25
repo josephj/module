@@ -12,9 +12,9 @@
 .yui3-skin-miiicasa .yui3-module-dialog {
     background: #fff;
     border: solid 1px #ccc;
-    width: 410px;
     min-width: 410px;
-    position: absolute;
+    position: absolute !important;
+    width: 410px;
     top: -9999px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
@@ -31,7 +31,6 @@
     padding: 10px;
     background: #fff;
     z-index: 2;
-    position: relative;
     text-align: left;
 }
 .yui3-skin-miiicasa .yui3-module-dialog .yui3-panel-content .yui3-widget-hd {
