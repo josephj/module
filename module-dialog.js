@@ -119,7 +119,7 @@ YUI.add("module-dialog", function (Y) {
          * @type {Array}
          * @readOnly
          */
-        dialogs {
+        dialogs: {
             value: [],
             readOnly: true
         },
