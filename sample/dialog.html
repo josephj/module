@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Module Dialog Example</title>
+<!-- YUI CSS foundation -->
+<link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssreset/reset-min.css">
+<link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssfonts/fonts-min.css">
+<!-- Button skin which dialog needs -->
+<link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssbutton/cssbutton.css">
+<link rel="stylesheet" href="http://a.mimgs.com/lib/mui/cssbutton/assets/skins/miiicasa/cssbutton-skin.css">
+<link rel="stylesheet" href="http://a.mimgs.com/lib/mui/module/assets/skins/miiicasa/module.css">
+<!-- Style for this page -->
+<link rel="stylesheet" href="demo.css">
+<!-- miiiCasa dialog skin -->
+<link rel="stylesheet" href="panel.css">
+<!-- YUI seed file -->
+<script src="http://yui.yahooapis.com/3.8.1/build/yui/yui-min.js"></script>
+<!-- Required module core and extensions -->
+<script src="../module.js"></script>
+<script src="../module-manager.js"></script>
+<script src="../module-dialog.js"></script>
+<script>
+
+// #foo (start)
+YUI.add("_foo", function (Y) {
+    var module, // The module instance.
+        node;   // The actual node.
+
+    module = new Y.Module({
+        selector: "#foo",
+        init: function () {}
+    });
+
+    module.on("viewload", function (e) {
+        node = this.getViewNode();
+        node.one(".show-button").on("click", function (e) {
+            e.preventDefault();
+            var html = [
+                '<div class="mod">',
+                '    <div class="mod-content">',
+                '        <div class="hd">Dialog Title</div>',
+                '        <div class="bd">Dialog Content</div>',
+                '        <div class="ft">Dialog Footer</div>',
+                '    </div>',
+                '</div>'
+            ].join("");
+            module.openDialog(html);
+        });
+    });
+
+}, "0.0.1", {
+    "requires": [
+        "module",
+        "module-dialog"
+    ]
+});
+// #foo (end)
+
+YUI().use("_foo", "module-manager", function (Y) {
+    var manager = new Y.ModuleManager();
+    manager.startAll();
+});
+</script>
+</head>
+<body class="yui3-skin-miiicasa">
+
+    <h1>showDialog - Module Dialog</h1>
+
+    <!-- #foo (start) -->
+    <div id="foo" class="mod">
+        <div class="mod-content">
+            <div class="hd">
+                <h2>module.showDialog</h2>
+            </div>
+            <div class="bd">
+                <pre><code>module.showDialog(html, options, name);</code></pre>
+                <button class="show-button yui3-button">Execute</button>
+            </div>
+        </div>
+    </div>
+    <!-- #foo (end) -->
+
+</body>
+</html>
