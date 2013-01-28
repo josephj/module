@@ -119,7 +119,7 @@ YUI.add("module-dialog", function (Y) {
          * @type {Array}
          * @readOnly
          */
-        dialogs {
+        dialogs: {
             value: [],
             readOnly: true
         },
@@ -320,8 +320,7 @@ YUI.add("module-dialog", function (Y) {
                 zIndex: 3
             }, attr);
 
-            var node = Y.Node.create(html),
-                panel;
+            node = Y.Node.create(html);
             node.addClass(DIALOG_CLASS + "-custom");
             _setMarkup(node);
             attr.boundingBox = node;
@@ -396,7 +395,7 @@ YUI.add("module-dialog", function (Y) {
                 eventName: "clickoutside"
             });
             panel.on("visibleChange", function (e) {
-                    that._set("visible", e.newVal);
+                that._set("visible", e.newVal);
             });
             that._set("panel", panel);
         }
