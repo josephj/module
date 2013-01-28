@@ -113,6 +113,17 @@ YUI.add("module-dialog", function (Y) {
             writeOnce: true
         },
         /**
+         * The dialog collections.
+         *
+         * @attribute dialog
+         * @type {Array}
+         * @readOnly
+         */
+        dialogs {
+            value: [],
+            readOnly: true
+        },
+        /**
          * Indicate whether to show the module.
          * This only works when having dialog attribute set to true.
          *
@@ -277,8 +288,28 @@ YUI.add("module-dialog", function (Y) {
             }
             return new Y.Panel(attr);
         },
-        "create": function (html, attr) {
+        /**
+         * Make a customized dialog.
+         * It's a shortcut method for creating a new Y.Panel instance.
+         *
+         * @method openDialog
+         * @param html {String|Node} The module's node or HTML.
+         * @param attr {Object} The Y.Panel attribute object.
+         * @param name {Object} Define a name if you want to preserve this dialog.
+         * @public
+         * @return {Y.Panel} The Panel instance.
+         */
+        openDialog: function (html, attr, name) {
             _log("create() is executed.");
+            var that = this,
+                node,
+                panel;
+
+            // Intialization
+            if (name && that.get("dialog")[name]) {
+                return that.get("dialog")[name];
+            }
+
             attr = attr || {};
             attr = Y.merge({
                 modal: true,
@@ -298,6 +329,10 @@ YUI.add("module-dialog", function (Y) {
 
             panel = new Y.Panel(attr);
             panel.get("hideOn").push({"eventName": "clickoutside"});
+
+            if (name) {
+                that.get("dialog")[name] = panel;
+            }
             return panel;
         },
         /**
