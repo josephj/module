@@ -312,6 +312,10 @@ YUI.add("module-dialog", function (Y) {
                 cache = that.get("dialogs")[name];
                 panel = cache.instance;
 
+                // Update Attributes.
+                attr = Y.merge(cache.attr, attr);
+                panel.setAttrs(attr);
+
                 // Update HTML.
                 node = Y.Node.create(html);
                 html = (node.one(".hd")) ? node.one(".hd").getHTML() : "";
@@ -320,10 +324,6 @@ YUI.add("module-dialog", function (Y) {
                 panel.set("bodyContent", html);
                 html = (node.one(".ft")) ? node.one(".ft").getHTML() : "";
                 panel.set("footerContent", html);
-
-                // Update Attributes.
-                attr = Y.merge(cache.attr, attr);
-                panel.setAttrs(attr);
 
                 // Show panel if it's necessary.
                 if (!panel.get("visible")) {
