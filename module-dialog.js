@@ -295,19 +295,37 @@ YUI.add("module-dialog", function (Y) {
          * @method openDialog
          * @param html {String|Node} The module's node or HTML.
          * @param attr {Object} The Y.Panel attribute object.
-         * @param name {Object} Define a name if you want to preserve this dialog.
+         * @param name {Object} Provide name if you want to reuse the dialog.
          * @public
          * @return {Y.Panel} The Panel instance.
          */
         openDialog: function (html, attr, name) {
-            _log("create() is executed.");
+            _log("openDialog() is executed.");
             var that = this,
                 node,
+                cache,
                 panel;
 
-            // Intialization
-            if (name && that.get("dialog")[name]) {
-                return that.get("dialog")[name];
+            // Use existing dialog.
+            if (name && that.get("dialogs")[name]) {
+                _log("openDialog() - You are using an existed dialog.");
+                cache = that.get("dialogs")[name];
+                panel = cache.instance;
+                if (html !== cache.html) {
+                    node = Y.Node.create(html);
+                    if (node.one(".hd")) {
+                        panel.set("headerContent", node.one(".hd").getHTML());
+                    }
+                    if (node.hone(".bd")) {
+                        panel.set("bodyContent", node.one(".bd").getHTML());
+                    }
+                    if (node.one(".ft")) {
+                        panel.set("footerContent", node.one(".ft").getHTML());
+                    }
+                    _log("openDialog() - The dialog HTML has been updated.");
+                }
+                panel.show();
+                return panel;
             }
 
             attr = attr || {};
@@ -330,8 +348,21 @@ YUI.add("module-dialog", function (Y) {
             panel.get("hideOn").push({"eventName": "clickoutside"});
 
             if (name) {
-                that.get("dialog")[name] = panel;
+                // Save the reusable dialog.
+                that.get("dialogs")[name] = {};
+                that.get("dialogs")[name].html = html;
+                that.get("dialogs")[name].instance = panel;
+            } else {
+                // Destroy use-once dialog.
+                panel.on("visibleChange", function (e) {
+                    var that = this;
+                    if (e.prevVal && !e.newVal) {
+                        _log("openDialog() - The dialog has been destroyed.");
+                        that.destroy();
+                    }
+                });
             }
+
             return panel;
         },
         /**

@@ -34,18 +34,22 @@ YUI.add("_foo", function (Y) {
 
     module.on("viewload", function (e) {
         node = this.getViewNode();
-        node.one(".show-button").on("click", function (e) {
+        var html = [
+            '<div class="mod">',
+            '    <div class="mod-content">',
+            '        <div class="hd">Dialog Title</div>',
+            '        <div class="bd">Dialog Content</div>',
+            '        <div class="ft">Dialog Footer</div>',
+            '    </div>',
+            '</div>'
+        ].join("");
+        node.one(".show-once-button").on("click", function (e) {
             e.preventDefault();
-            var html = [
-                '<div class="mod">',
-                '    <div class="mod-content">',
-                '        <div class="hd">Dialog Title</div>',
-                '        <div class="bd">Dialog Content</div>',
-                '        <div class="ft">Dialog Footer</div>',
-                '    </div>',
-                '</div>'
-            ].join("");
             module.openDialog(html);
+        });
+        node.one(".show-reuse-button").on("click", function (e) {
+            e.preventDefault();
+            module.openDialog(html, null, "reuse");
         });
     });
 
@@ -74,8 +78,12 @@ YUI().use("_foo", "module-manager", function (Y) {
                 <h2>module.showDialog</h2>
             </div>
             <div class="bd">
+                <h3>One-time Dialog</h3>
+                <pre><code>module.showDialog(html);</code></pre>
+                <button class="show-once-button yui3-button">Execute</button>
+                <h3>Reusable Dialog</h3>
                 <pre><code>module.showDialog(html, options, name);</code></pre>
-                <button class="show-button yui3-button">Execute</button>
+                <button class="show-reuse-button yui3-button">Execute</button>
             </div>
         </div>
     </div>
