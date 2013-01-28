@@ -311,20 +311,24 @@ YUI.add("module-dialog", function (Y) {
                 _log("openDialog() - You are using an existed dialog.");
                 cache = that.get("dialogs")[name];
                 panel = cache.instance;
-                if (html !== cache.html) {
-                    node = Y.Node.create(html);
-                    if (node.one(".hd")) {
-                        panel.set("headerContent", node.one(".hd").getHTML());
-                    }
-                    if (node.hone(".bd")) {
-                        panel.set("bodyContent", node.one(".bd").getHTML());
-                    }
-                    if (node.one(".ft")) {
-                        panel.set("footerContent", node.one(".ft").getHTML());
-                    }
-                    _log("openDialog() - The dialog HTML has been updated.");
+
+                // Update HTML.
+                node = Y.Node.create(html);
+                html = (node.one(".hd")) ? node.one(".hd").getHTML() : "";
+                panel.set("headerContent", html);
+                html = (node.one(".bd")) ? node.one(".bd").getHTML() : "";
+                panel.set("bodyContent", html);
+                html = (node.one(".ft")) ? node.one(".ft").getHTML() : "";
+                panel.set("footerContent", html);
+
+                // Update Attributes.
+                attr = Y.merge(cache.attr, attr);
+                panel.setAttrs(attr);
+
+                // Show panel if it's necessary.
+                if (!panel.get("visible")) {
+                    panel.show();
                 }
-                panel.show();
                 return panel;
             }
 
@@ -352,6 +356,7 @@ YUI.add("module-dialog", function (Y) {
                 that.get("dialogs")[name] = {};
                 that.get("dialogs")[name].html = html;
                 that.get("dialogs")[name].instance = panel;
+                that.get("dialogs")[name].attr = attr;
             } else {
                 // Destroy use-once dialog.
                 panel.on("visibleChange", function (e) {
