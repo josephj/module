@@ -73,9 +73,8 @@ YUI.add("module-list", function (Y) {
                 o = Y.merge(config);
                 delete o.selectors;
                 o.selector = selector;
-Y.log(o);
-       //         module = new Y.Module(o);
-        //        that.get("modules").push(module);
+                module = new Y.Module(o);
+                that.get("modules").push(module);
             });
         }
     });
