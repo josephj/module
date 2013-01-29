@@ -12,15 +12,15 @@
 <script src="../module-list.js"></script>
 <script>
 YUI.add("mod", function (Y) {
-    var module, // The module instance.
-        node;   // The actual node.
 
-    modules = new Y.ModuleList({
+    var modules = new Y.ModuleList({
         selectors: ["#foo", "#bar"],
         init: function () {},
         on: {
             viewload: function () {
-                alert(this.selector);
+                var that = this;
+                    node = that.get("node");
+                node.one(".bd").append("<p>The " + that.get("selector") + " module has been loaded.</p>");
             }
         }
     });
@@ -49,7 +49,6 @@ YUI().use("mod", "module-manager", function (Y) {
                 <h2>#foo</h2>
             </div>
             <div class="bd">
-                <p>I am #foo</p>
             </div>
         </div>
     </div>
@@ -62,7 +61,6 @@ YUI().use("mod", "module-manager", function (Y) {
                 <h2>#bar</h2>
             </div>
             <div class="bd">
-                <p>I am #bar</p>
             </div>
         </div>
     </div>
