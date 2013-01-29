@@ -157,7 +157,7 @@ YUI.add("module-dialog", function (Y) {
          * @default 400
          */
         width: {
-            value: 400,
+            value: DEFAULT_WIDTH,
             validator: Y.Lang.isNumber,
             writeOnce: true
         }
