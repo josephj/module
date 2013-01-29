@@ -146,6 +146,20 @@ YUI.add("module-dialog", function (Y) {
         panel: {
             value: null,
             readOnly: true
+        },
+        /**
+         * Specify the dialog width.
+         * It's only useful when dialog sets to true.
+         *
+         * @attribute width
+         * @type {Number}
+         * @writeOnce
+         * @default 400
+         */
+        width: {
+            value: 400,
+            validator: Y.Lang.isNumber,
+            writeOnce: true
         }
     };
 
@@ -424,7 +438,8 @@ YUI.add("module-dialog", function (Y) {
                 boundingBox: node,
                 contentBox: node.one(that.CONTENT_NODE),
                 visible: false,
-                zIndex: 3
+                zIndex: 3,
+                width: that.get("width")
             });
             panel = that._create(attr);
             panel.get("hideOn").push({
