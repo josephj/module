@@ -1,6 +1,44 @@
 /*global YUI */
 YUI.add("module-list", function (Y) {
 
+    /**
+     * If you want to write single JavaScript file for multiple modules
+     * with almost-same behavior, you can use `module-list` instead of `module`.
+     *
+     * ## Before
+     *
+     * ```javascript
+     * new Y.Module({
+     *     selector: "#foo",
+     *     init: function () {},
+     *     on: {
+     *         viewload: function () { // do something }
+     *     }
+     * });
+     * new Y.Module({
+     *     selector: "#bar",
+     *     init: function () {},
+     *     on: {
+     *         viewload: function () { // do same something }
+     *     }
+     *  });
+     * ```
+     *
+     * ## After
+     *
+     * ```javascript
+     * new Y.ModuleList({
+     *     selectors: ["#foo", "#bar"],
+     *     init: function () {},
+     *     on: {
+     *         viewload: function () { // do something }
+     *     }
+     * });
+     * ```
+     *
+     * @module module-list
+     */
+
     var MODULE_ID = "module-list",
         _log;
 
@@ -19,16 +57,16 @@ YUI.add("module-list", function (Y) {
     /**
      * Code Sample:
      *
-     *     var module = new Y.Module({
-     *         selector: "#foo"
+     *     var modules = new Y.ModuleList({
+     *         selectors: ["#foo", "#bar"],
+     *         on: {
+     *             viewload: function (e) {
+     *                 var node = this.get("node");
+     *             }
+     *         }
      *     });
-     *     module.on("viewload", function (e) {
-     *         _node = this.get("node");
-     *     });
-     *     module.broadcast();
-     *     module.listen();
      *
-     * @class Module
+     * @constructor ModuleList
      */
     function ModuleList() {
         ModuleList.superclass.constructor.apply(this, arguments);
@@ -36,11 +74,26 @@ YUI.add("module-list", function (Y) {
 
     ModuleList.NAME = "module-list";
     ModuleList.ATTRS = {
+        /**
+         * The CSS selectors of matched modules.
+         * Currently it only supports ID selectors.
+         *
+         * @attribute selectors
+         * @type {Array}
+         * @writeOnce
+         */
         selectors: {
             value: [],
             writeOnce: true,
             validator: Y.Lang.isArray
         },
+        /**
+         * The Y.Module collection in this ModuleList.
+         *
+         * @attribute modules
+         * @type {Array}
+         * @readOnly
+         */
         modules: {
             value: [],
             validator: Y.Lang.isArray,
@@ -50,7 +103,7 @@ YUI.add("module-list", function (Y) {
 
     Y.extend(ModuleList, Y.Base, {
         /**
-         * Initialize the module instance.
+         * Initialize the ModuleList instance.
          *
          * @method initializer
          * @public
@@ -61,7 +114,7 @@ YUI.add("module-list", function (Y) {
             var that = this;
             config = config || {};
 
-            if (!config.selectors) {
+            if (!config.selectors || !Y.Lang.isArray(config.selectors)) {
                 _log("initializer() - You must provide selectors attribute.", "error");
                 return;
             }
