@@ -1,17 +1,25 @@
-/*global YUI */
+/*global YUI, document */
 YUI.add("module-dialog", function (Y) {
 
-    // Augment Panel.hide to fire "autohide" event.
-    (function () {
-        var fn = Y.Panel.prototype.hide;
-        Y.Panel.prototype.hide = function (e) {
-            var type = (e && e.type) ? e.type : null;
-            if (type === "key" || type === "clickoutside") {
-                this.fire("autohide", {type: type});
-            }
-            fn.call(this);
-        };
-    })();
+    "use strict";
+
+    // Create a plugin to augment Panel.hide to fire "autohide" event.
+    function PanelPlugin() {
+        PanelPlugin.superclass.constructor.apply(this, arguments);
+    }
+    PanelPlugin.NAME = "panel-autohide-plugin";
+    PanelPlugin.NS = "autohide";
+    Y.extend(PanelPlugin, Y.Plugin.Base, {
+        initializer: function () {
+            this.beforeHostMethod("hide", function (e) {
+                var type = (e && e.type) ? e.type : null,
+                    keyCode = (e && e.keyCode) ? e.keyCode : null;
+                if (type === "key" && keyCode === 27) {
+                    this.get("host").fire("autohide", {type: type});
+                }
+            });
+        }
+    });
 
     /**
      * Y.Module extension that provides convenient methods to create
@@ -87,12 +95,15 @@ YUI.add("module-dialog", function (Y) {
      *
      * @method _showPanel
      * @param attr {Object} The config attribute.
+     * @param callback {Function} The callback function.
+     * @param type {Object} The dialog type, it can be "alert" or "confirm".
      */
-    _showPanel = function (attr, callback) {
+    _showPanel = function (attr, callback, type) {
         _log("_showPanel() is executed.");
         callback = callback || function () {};
         if (!_panel) {
             _panel = new Y.Panel(attr);
+            _panel.plug(PanelPlugin);
             _panel.on("visibleChange", function (e) {
                 if (e.newVal === false && _handler) {
                     _log("_handle is detached.");
@@ -104,9 +115,13 @@ YUI.add("module-dialog", function (Y) {
         attr.centered = true;
         _panel.setAttrs(attr);
         _panel.get("boundingBox").addClass(DIALOG_CLASS);
-        _handler = _panel.on("autohide", function (e, callback) {
-            callback(false);
-        }, _panel, callback);
+        _handler = _panel.on("autohide", function (e, callback, type) {
+            if (type === "confirm") {
+                callback(false);
+            } else {
+                callback();
+            }
+        }, _panel, callback, type);
         _panel.show();
     };
 
@@ -293,7 +308,7 @@ YUI.add("module-dialog", function (Y) {
             var that = this,
                 attr;
             attr = that._getAttrs(msg, "alert", callback);
-            _showPanel(attr, callback);
+            _showPanel(attr, callback, "alert");
         },
         /**
          * Custom UI replacement for window.confirm.
@@ -308,7 +323,7 @@ YUI.add("module-dialog", function (Y) {
             var that = this,
                 attr;
             attr = that._getAttrs(msg, "confirm", callback);
-            _showPanel(attr, callback);
+            _showPanel(attr, callback, "confirm");
         },
         /**
          * Make a customized dialog.
@@ -485,6 +500,7 @@ YUI.add("module-dialog", function (Y) {
     "requires": [
         "module",
         "panel",
+        "plugin",
         "intl"
     ]
 });

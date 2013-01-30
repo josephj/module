@@ -33,7 +33,9 @@ YUI.add("_foo", function (Y) {
     module.on("viewload", function (e) {
         node = this.getViewNode();
         node.one(".alert-button").on("click", function (e) {
-            module.alert("Hello World!");
+            module.alert("Hello World!", function (result) {
+                module.log(result);
+            });
         });
         node.one(".confirm-button").on("click", function (e) {
             module.confirm("Are you sure?", function (result) {
