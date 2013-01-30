@@ -120,14 +120,11 @@ YUI.add("module-list", function (Y) {
             }
 
             Y.each(config.selectors, function (selector) {
-                var o,      // New config object for individual module.
-                    module; // Module instance.
-
-                o = Y.merge(config);
+                var o;      // New config object for individual module.
+                o = Y.clone(config);
                 delete o.selectors;
                 o.selector = selector;
-                module = new Y.Module(o);
-                that.get("modules").push(module);
+                that.get("modules").push(new Y.Module(o));
             });
         }
     });
