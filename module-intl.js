@@ -32,6 +32,18 @@ YUI.add("module-intl", function (Y) {
 
     ModuleIntl.ATTRS = {
         /**
+         * The default label is transformed from  module selector.
+         * You can change it to fetch your language resource correctly.
+         *
+         * @attribute langLabel
+         * @type String
+         * @writeOnce
+         */
+        langLabel: {
+            value: null,
+            writeOnce: true
+        },
+        /**
          * Module must define its lang module before executing getTrans.
          *
          * @attribute langModule
@@ -118,7 +130,7 @@ YUI.add("module-intl", function (Y) {
             }
 
             // Full language key is composed by module name, div id, and key.
-            id  = that.get("selector").replace("#", "").replace(".", "");
+            id  = (that.get("langLabel")) ? that.get("langLabel") : that.get("selector").replace("#", "").replace(".", "");
             id = id.replace(/-/g, "_");
             key = [module, id, key].join("-");
 
