@@ -324,7 +324,9 @@ YUI.add("module-dialog", function (Y) {
             if (Y.Lang.isUndefined(attr.close)) {
                 attr.close = true;
             }
-            return new Y.Panel(attr);
+            var panel = new Y.Panel(attr);
+            panel.render(document.body);
+            return panel;
         },
         /**
          * Make a customized dialog.
@@ -462,6 +464,7 @@ YUI.add("module-dialog", function (Y) {
                 boundingBox: node,
                 contentBox: node.one(that.CONTENT_NODE),
                 visible: false,
+                render: false,
                 zIndex: 3,
                 width: that.get("width")
             });
