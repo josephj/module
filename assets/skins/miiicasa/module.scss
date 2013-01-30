@@ -1,12 +1,14 @@
 @import "base";
 
-/*@import "compass";*/
-/*$header-bgcolor: #393939;*/
-/*$header-border-bottom: 5px solid #77cdd0;*/
+/*@import "compass";
+$header-bgcolor: #393939;
+$header-border-bottom: 5px solid #77cdd0;*/
 
 .yui3-skin-miiicasa {
     .yui3-panel-hidden {
-        visibility: hidden;
+        left: -1000em;
+        position: absolute;
+        top: -1000em;
     }
     .yui3-panel-focused {
         outline: 0;
