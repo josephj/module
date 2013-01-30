@@ -1,8 +1,6 @@
 /*@import "base";*/
 .yui3-skin-miiicasa .yui3-panel-hidden {
-    left: -1000em;
-    position: absolute;
-    top: -1000em;
+    visibility: hidden;
 }
 .yui3-skin-miiicasa .yui3-panel-focused {
     outline: 0;
