@@ -1,6 +1,18 @@
 /*global YUI */
 YUI.add("module-dialog", function (Y) {
 
+    // Augment Panel.hide to fire "autohide" event.
+    (function () {
+        var fn = Y.Panel.prototype.hide;
+        Y.Panel.prototype.hide = function (e) {
+            var type = (e && e.type) ? e.type : null;
+            if (type === "key" || type === "clickoutside") {
+                this.fire("autohide", {type: type});
+            }
+            fn.call(this);
+        };
+    })();
+
     /**
      * Y.Module extension that provides convenient methods to create
      * custom alert and confirm dialog UI easily. Even better, you can transform
@@ -11,6 +23,7 @@ YUI.add("module-dialog", function (Y) {
      */
 
     var _panel,
+        _handler,
         //===========================
         // Shortcuts
         //===========================
@@ -75,14 +88,25 @@ YUI.add("module-dialog", function (Y) {
      * @method _showPanel
      * @param attr {Object} The config attribute.
      */
-    _showPanel = function (attr) {
+    _showPanel = function (attr, callback) {
         _log("_showPanel() is executed.");
+        callback = callback || function () {};
         if (!_panel) {
             _panel = new Y.Panel(attr);
+            _panel.on("visibleChange", function (e) {
+                if (e.newVal === false && _handler) {
+                    _log("_handle is detached.");
+                    _handler.detach();
+                }
+            });
         }
+
         attr.centered = true;
         _panel.setAttrs(attr);
         _panel.get("boundingBox").addClass(DIALOG_CLASS);
+        _handler = _panel.on("autohide", function (e, callback) {
+            callback(false);
+        }, _panel, callback);
         _panel.show();
     };
 
@@ -269,7 +293,7 @@ YUI.add("module-dialog", function (Y) {
             var that = this,
                 attr;
             attr = that._getAttrs(msg, "alert", callback);
-            _showPanel(attr);
+            _showPanel(attr, callback);
         },
         /**
          * Custom UI replacement for window.confirm.
@@ -284,7 +308,7 @@ YUI.add("module-dialog", function (Y) {
             var that = this,
                 attr;
             attr = that._getAttrs(msg, "confirm", callback);
-            _showPanel(attr);
+            _showPanel(attr, callback);
         },
         /**
          * Make a customized dialog.
