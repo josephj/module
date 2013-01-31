@@ -47,6 +47,13 @@ YUI.add("module-dialog", function (Y) {
             width   : DEFAULT_WIDTH,
             xy      : [0, 0],
             zIndex  : 4
+            hideOn  : [
+                {
+                    node: Y.one("document"),
+                    eventName: "key",
+                    keyCode: "esc"
+                }
+            ]
         },
         WIDGET_CLASS_PREFIX = "yui3-widget-",
         DIALOG_CLASS = "yui3-module-dialog",
@@ -262,7 +269,8 @@ YUI.add("module-dialog", function (Y) {
             attr.bodyContent   = '<div class="content">' + content + "</div>";
 
             // Get dialog buttons.
-            if (type === "confirm") {
+            switch (type) {
+            case "confirm":
                 attr.buttons = [
                     {
                         value: that.lang.confirm_ok_button,
@@ -281,7 +289,8 @@ YUI.add("module-dialog", function (Y) {
                         section: Y.WidgetStdMod.FOOTER
                     }
                 ];
-            } else if (type === "alert") {
+                break;
+            case "alert":
                 attr.buttons = [
                     {
                         value: that.lang.alert_button,
@@ -292,6 +301,11 @@ YUI.add("module-dialog", function (Y) {
                         section: Y.WidgetStdMod.FOOTER
                     }
                 ];
+                break;
+            case "inform":
+                attr.hideOn = [];
+                attr.buttons = [];
+                break;
             }
             return Y.merge(DEFAULT_ATTR, attr);
         },
@@ -326,6 +340,32 @@ YUI.add("module-dialog", function (Y) {
             _showPanel(attr, callback, "confirm");
         },
         /**
+         * @method info
+         * @param msg {String|Object}
+         * @param callback {Function} The callback function.
+         * @public
+         */
+        "inform": function (msg, callback) {
+            _log("inform() is executed.");
+            var that = this,
+                attr;
+            attr = that._getAttrs(msg, "confirm", callback);
+            _showPanel(attr, callback);
+        },
+        /**
+         * Hide all _panel.
+         * This method is particular designed for the 'inform' method because
+         * it has no way to close itself.
+         *
+         * @method dismiss
+         * @param msg {String|Object}
+         * @public
+         */
+        "dismiss": function () {
+            _log("dismiss() is executed.");
+            _panel.hide();
+        },
+        /**
          * Make a customized dialog.
          * It's a shortcut method for creating a new Y.Panel instance.
          *
@@ -336,9 +376,6 @@ YUI.add("module-dialog", function (Y) {
          */
         "_create": function (attr) {
             _log("create() is executed.");
-            if (Y.Lang.isUndefined(attr.close)) {
-                attr.close = true;
-            }
             var panel = new Y.Panel(attr);
             panel.render(document.body);
             return panel;
@@ -391,7 +428,6 @@ YUI.add("module-dialog", function (Y) {
             attr = Y.merge({
                 modal: true,
                 centered: true,
-                close: true,
                 render: true,
                 width: 660,
                 zIndex: 3
@@ -449,6 +485,7 @@ YUI.add("module-dialog", function (Y) {
         "hide": function () {
             var that = this,
                 panel = that.get("panel");
+
             if (!panel) {
                 return;
             }
