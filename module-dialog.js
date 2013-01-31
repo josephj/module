@@ -390,8 +390,16 @@ YUI.add("module-dialog", function (Y) {
          */
         "_create": function (attr) {
             _log("create() is executed.");
-            var panel = new Y.Panel(attr);
+            var that = this,
+                panel = new Y.Panel(attr);
             panel.render(document.body);
+            panel.get("hideOn").push({
+                eventName: "clickoutside"
+            });
+            panel.on("visibleChange", function (e) {
+                that._set("visible", e.newVal);
+            });
+            that._set("panel", panel);
             return panel;
         },
         /**
@@ -534,14 +542,13 @@ YUI.add("module-dialog", function (Y) {
                 zIndex: 3,
                 width: that.get("width")
             });
-            panel = that._create(attr);
-            panel.get("hideOn").push({
-                eventName: "clickoutside"
-            });
-            panel.on("visibleChange", function (e) {
-                that._set("visible", e.newVal);
-            });
-            that._set("panel", panel);
+            if (that.get("ready")) {
+                panel = that._create(attr);
+            } else {
+                that.on("viewload", function () {
+                    panel = that._create(attr);
+                });
+            }
         }
     };
 
