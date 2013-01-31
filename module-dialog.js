@@ -46,7 +46,7 @@ YUI.add("module-dialog", function (Y) {
             visible : true,
             width   : DEFAULT_WIDTH,
             xy      : [0, 0],
-            zIndex  : 4
+            zIndex  : 4,
             hideOn  : [
                 {
                     node: Y.one("document"),
@@ -180,6 +180,20 @@ YUI.add("module-dialog", function (Y) {
         visible: {
             value: false,
             validator: Y.Lang.isBoolean,
+            readOnly: true
+        },
+        /**
+         * The shared Y.Panel instance that alert, confirm, and inform uses.
+         *
+         * @attribute sharePanel
+         * @type {Y.Node}
+         * @readOnly
+         */
+        sharePanel: {
+            value: null,
+            getter: function () {
+                return _panel;
+            },
             readOnly: true
         },
         /**
