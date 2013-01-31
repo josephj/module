@@ -532,20 +532,30 @@ YUI.add("module-dialog", function (Y) {
                 panel;
 
             // Transform module to dialog.
-            node = Y.one(that.get("selector"));
-            _setMarkup(node);
-            attr = Y.merge(DEFAULT_ATTR, {
-                boundingBox: node,
-                contentBox: node.one(that.CONTENT_NODE),
-                visible: false,
-                render: false,
-                zIndex: 3,
-                width: that.get("width")
-            });
             if (that.get("ready")) {
+                node = Y.one(that.get("selector"));
+                attr = Y.merge(DEFAULT_ATTR, {
+                    boundingBox: node,
+                    contentBox: node.one(that.CONTENT_NODE),
+                    visible: false,
+                    render: false,
+                    zIndex: 3,
+                    width: that.get("width")
+                });
+                _setMarkup(node);
                 panel = that._create(attr);
             } else {
                 that.on("viewload", function () {
+                    node = Y.one(that.get("selector"));
+                    attr = Y.merge(DEFAULT_ATTR, {
+                        boundingBox: node,
+                        contentBox: node.one(that.CONTENT_NODE),
+                        visible: false,
+                        render: false,
+                        zIndex: 3,
+                        width: that.get("width")
+                    });
+                    _setMarkup(node);
                     panel = that._create(attr);
                 });
             }
