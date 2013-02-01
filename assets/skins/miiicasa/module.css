@@ -14,8 +14,8 @@
     background: #fff;
     border: solid 1px #ccc;
     position: absolute !important;
-    width: 410px;
-    min-width: 410px;
+    width: 200px;
+    min-width: 200px;
     top: -9999px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;

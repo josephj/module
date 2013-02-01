@@ -19,8 +19,8 @@ $header-border-bottom: 5px solid #77cdd0;*/
         background: #fff;
         border: solid 1px #ccc;
         position: absolute !important; // TODO - Figure out why it sometimes add relative by JavaScript.
-        width: 410px;
-        min-width: 410px;
+        width: 200px;
+        min-width: 200px;
         top: -9999px;
         @include border-radius(5px);
         @include box-shadow(#333 2px 2px 4px);
