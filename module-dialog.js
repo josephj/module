@@ -46,14 +46,7 @@ YUI.add("module-dialog", function (Y) {
             visible : true,
             width   : DEFAULT_WIDTH,
             xy      : [0, 0],
-            zIndex  : 4,
-            hideOn  : [
-                {
-                    node: Y.one("document"),
-                    eventName: "key",
-                    keyCode: "esc"
-                }
-            ]
+            zIndex  : 4
         },
         WIDGET_CLASS_PREFIX = "yui3-widget-",
         DIALOG_CLASS = "yui3-module-dialog",
@@ -113,6 +106,7 @@ YUI.add("module-dialog", function (Y) {
             _panel.plug(PanelPlugin);
             _panel.on("visibleChange", function (e) {
                 if (e.newVal === false && _handler) {
+                    console.log(e, "warn");
                     _log("_handle is detached.");
                     _handler.detach();
                 }
@@ -388,18 +382,35 @@ YUI.add("module-dialog", function (Y) {
          * @public
          * @return {Y.Panel} The Panel instance.
          */
-        "_create": function (attr) {
-            _log("create() is executed.");
+        "_createModuleDialog": function () {
+            _log("_createModuleDialog() is executed.");
             var that = this,
-                panel = new Y.Panel(attr);
-            panel.render(document.body);
+                attr,
+                node,
+                panel;
+
+            // Prepares for creating a panel.
+            node = Y.one(that.get("selector"));
+            attr = Y.merge(DEFAULT_ATTR, {
+                boundingBox: node,
+                contentBox: node.one(that.CONTENT_NODE),
+                visible: false,
+                render: false,
+                zIndex: 3,
+                width: that.get("width") || DEFAULT_WIDTH
+            });
+            _setMarkup(node);
+
+            panel = new Y.Panel(attr);
             panel.get("hideOn").push({
                 eventName: "clickoutside"
             });
             panel.on("visibleChange", function (e) {
                 that._set("visible", e.newVal);
             });
+            panel.render(document.body);
             that._set("panel", panel);
+
             return panel;
         },
         /**
@@ -533,31 +544,9 @@ YUI.add("module-dialog", function (Y) {
 
             // Transform module to dialog.
             if (that.get("ready")) {
-                node = Y.one(that.get("selector"));
-                attr = Y.merge(DEFAULT_ATTR, {
-                    boundingBox: node,
-                    contentBox: node.one(that.CONTENT_NODE),
-                    visible: false,
-                    render: false,
-                    zIndex: 3,
-                    width: that.get("width")
-                });
-                _setMarkup(node);
-                panel = that._create(attr);
+                that._createModuleDialog();
             } else {
-                that.on("viewload", function () {
-                    node = Y.one(that.get("selector"));
-                    attr = Y.merge(DEFAULT_ATTR, {
-                        boundingBox: node,
-                        contentBox: node.one(that.CONTENT_NODE),
-                        visible: false,
-                        render: false,
-                        zIndex: 3,
-                        width: that.get("width")
-                    });
-                    _setMarkup(node);
-                    panel = that._create(attr);
-                });
+                that.on("viewload", Y.bind(that._createModuleDialog, that));
             }
         }
     };
