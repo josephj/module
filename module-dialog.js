@@ -22,7 +22,7 @@ YUI.add("module-dialog", function (Y) {
             this.beforeHostMethod("hide", function (e) {
                 var type = (e && e.type) ? e.type : null,
                     keyCode = (e && e.keyCode) ? e.keyCode : null;
-                if (type === "key" && keyCode === 27) {
+                if ((type === "key" && keyCode === 27) || type === "clickoutside") {
                     this.get("host").fire("autohide", {type: type});
                 }
             });
@@ -126,7 +126,6 @@ YUI.add("module-dialog", function (Y) {
             });
         }
 
-        attr.centered = true;
         _dialog.setAttrs(attr);
         _dialog.get("boundingBox").addClass(DIALOG_CLASS);
         _handler = _dialog.on("autohide", function (e, callback, type) {
@@ -136,6 +135,7 @@ YUI.add("module-dialog", function (Y) {
                 callback();
             }
         }, _dialog, callback, type);
+        _dialog.set("centered", true);
         _dialog.show();
     };
 
