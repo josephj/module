@@ -409,7 +409,7 @@ YUI.add("module-dialog", function (Y) {
             attr = Y.merge(DEFAULT_ATTR, {
                 boundingBox: node,
                 contentBox: node.one(that.CONTENT_NODE),
-                visible: false,
+                visible: that.get("visible"),
                 render: false,
                 zIndex: 3,
                 width: that.get("width") || DEFAULT_WIDTH
