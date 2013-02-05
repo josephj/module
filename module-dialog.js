@@ -3,6 +3,14 @@ YUI.add("module-dialog", function (Y) {
 
     "use strict";
 
+    /**
+     * An extension that provides ability to use
+     * several predefined dialog UIs.
+     *
+     * @module module-dialog
+     * @author josephj
+     */
+
     // Create a plugin to augment Panel.hide to fire "autohide" event.
     function PanelPlugin() {
         PanelPlugin.superclass.constructor.apply(this, arguments);
@@ -22,15 +30,20 @@ YUI.add("module-dialog", function (Y) {
     });
 
     /**
-     * Y.Module extension that provides convenient methods to create
-     * custom alert and confirm dialog UI easily. Even better, you can transform
-     * whole module to a panel directly.
+     * The ModuleDialog class that provides convenient methods to
+     * use several predefined dialog UIs.
      *
-     * @module module
-     * @submodule module-dialog
+     * <ul>
+     * <li>The `alert` method can replace standard `window.alert`.</li>
+     * <li>The `confirm` method can replace standard `window.confirm`.</li>
+     * <li>The `inform` method shows a simple text overlay
+     * without header and buttons.</li>
+     * </ul>
+     *
+     * @class ModuleDialog
+     * @param config {Object} User configuration object
      */
-
-    var _panel,
+    var _dialog, // Shared dialog instance for `alert`, `confirm`, and `inform`.
         _handler,
         //===========================
         // Shortcuts
@@ -55,18 +68,19 @@ YUI.add("module-dialog", function (Y) {
                 }
             ]
         },
-        WIDGET_CLASS_PREFIX = "yui3-widget-",
         DIALOG_CLASS = "yui3-module-dialog",
         MODULE_ID = "module-dialog",
+        WIDGET_CLASS_PREFIX = "yui3-widget-",
         //===========================
         // Methods
         //===========================
         _log,
         _setMarkup,
-        _showPanel;
+        _showDialog;
 
     /**
-     * A convenient alias method for Y.log(<msg>, "info", "module-dialog");
+     * A convenient alias method for
+     * Y.log(<msg>, "info", "module-dialog");
      *
      * @method _log
      * @private
@@ -78,7 +92,7 @@ YUI.add("module-dialog", function (Y) {
     };
 
     /**
-     * Set the class names which Y.Widget needs.
+     * Sets the class names which Y.Panel needs.
      *
      * @method _setMarkup
      * @private
@@ -97,21 +111,20 @@ YUI.add("module-dialog", function (Y) {
     };
 
     /**
-     * Shows the panel.
-     * It creates YUI Panel instance for first time.
+     * Shows dialog UI.
      *
-     * @method _showPanel
+     * @method _showDialog
      * @param attr {Object} The config attribute.
      * @param callback {Function} The callback function.
      * @param type {Object} The dialog type, it can be "alert" or "confirm".
      */
-    _showPanel = function (attr, callback, type) {
-        _log("_showPanel() is executed.");
+    _showDialog = function (attr, callback, type) {
+        _log("_showDialog() is executed.");
         callback = callback || function () {};
-        if (!_panel) {
-            _panel = new Y.Panel(attr);
-            _panel.plug(PanelPlugin);
-            _panel.on("visibleChange", function (e) {
+        if (!_dialog) {
+            _dialog = new Y.Panel(attr);
+            _dialog.plug(PanelPlugin);
+            _dialog.on("visibleChange", function (e) {
                 if (e.newVal === false && _handler) {
                     _log("_handle is detached.");
                     _handler.detach();
@@ -120,16 +133,16 @@ YUI.add("module-dialog", function (Y) {
         }
 
         attr.centered = true;
-        _panel.setAttrs(attr);
-        _panel.get("boundingBox").addClass(DIALOG_CLASS);
-        _handler = _panel.on("autohide", function (e, callback, type) {
+        _dialog.setAttrs(attr);
+        _dialog.get("boundingBox").addClass(DIALOG_CLASS);
+        _handler = _dialog.on("autohide", function (e, callback, type) {
             if (type === "confirm") {
                 callback(false);
             } else {
                 callback();
             }
-        }, _panel, callback, type);
-        _panel.show();
+        }, _dialog, callback, type);
+        _dialog.show();
     };
 
     /**
@@ -179,7 +192,7 @@ YUI.add("module-dialog", function (Y) {
          */
         visible: {
             value: false,
-            validator: Y.Lang.isBoolean,
+            validator: Lang.isBoolean,
             readOnly: true
         },
         /**
@@ -192,7 +205,7 @@ YUI.add("module-dialog", function (Y) {
         sharePanel: {
             value: null,
             getter: function () {
-                return _panel;
+                return _dialog;
             },
             readOnly: true
         },
@@ -218,7 +231,7 @@ YUI.add("module-dialog", function (Y) {
          */
         width: {
             value: DEFAULT_WIDTH,
-            validator: Y.Lang.isNumber,
+            validator: Lang.isNumber,
             writeOnce: true
         }
     };
@@ -245,7 +258,7 @@ YUI.add("module-dialog", function (Y) {
         _getAttrs: function (attr, type, callback) {
             attr = attr || {};
             type = (type === "confirm") ? "confirm" : "alert";
-            callback = (Y.Lang.isFunction(callback)) ? callback : function () {};
+            callback = (Lang.isFunction(callback)) ? callback : function () {};
 
             var title,
                 content,
@@ -253,7 +266,7 @@ YUI.add("module-dialog", function (Y) {
                 i;
 
             // Get dialog title and content.
-            if (Y.Lang.isObject(attr)) {
+            if (Lang.isObject(attr)) {
 
                 // Only title and content is valid.
                 for (i in attr) {
@@ -272,7 +285,7 @@ YUI.add("module-dialog", function (Y) {
                     content = attr.content;
                     delete attr.content;
                 }
-            } else if (Y.Lang.isString(attr)) {
+            } else if (Lang.isString(attr)) {
                 content = attr;
                 attr = {};
             }
@@ -290,7 +303,7 @@ YUI.add("module-dialog", function (Y) {
                         value: that.lang.confirm_ok_button,
                         action: function (e) {
                             callback(true);
-                            _panel.hide();
+                            _dialog.hide();
                         },
                         section: Y.WidgetStdMod.FOOTER
                     },
@@ -298,7 +311,7 @@ YUI.add("module-dialog", function (Y) {
                         value: that.lang.confirm_cancel_button,
                         action: function (e) {
                             callback(false);
-                            _panel.hide();
+                            _dialog.hide();
                         },
                         section: Y.WidgetStdMod.FOOTER
                     }
@@ -310,7 +323,7 @@ YUI.add("module-dialog", function (Y) {
                         value: that.lang.alert_button,
                         action: function (e) {
                             callback();
-                            _panel.hide();
+                            _dialog.hide();
                         },
                         section: Y.WidgetStdMod.FOOTER
                     }
@@ -324,7 +337,7 @@ YUI.add("module-dialog", function (Y) {
             return Y.merge(DEFAULT_ATTR, attr);
         },
         /**
-         * Custom UI replacement for window.alert.
+         * Shows an alert dialog box.
          *
          * @method alert
          * @param msg {String|Object} The alert message.
@@ -336,48 +349,50 @@ YUI.add("module-dialog", function (Y) {
             var that = this,
                 attr;
             attr = that._getAttrs(msg, "alert", callback);
-            _showPanel(attr, callback, "alert");
+            _showDialog(attr, callback, "alert");
         },
         /**
-         * Custom UI replacement for window.confirm.
+         * Shows a confirm dialog box.
          *
          * @method confirm
+         * @public
          * @param msg {String|Object}
          * @param callback {Function} The callback function.
-         * @public
          */
         "confirm": function (msg, callback) {
             _log("confirm() is executed.");
             var that = this,
                 attr;
             attr = that._getAttrs(msg, "confirm", callback);
-            _showPanel(attr, callback, "confirm");
+            _showDialog(attr, callback, "confirm");
         },
         /**
+         * Shows an overlay which doesn't have buttons and
+         * user can't close it.
+         *
          * @method info
+         * @public
          * @param msg {String|Object}
          * @param callback {Function} The callback function.
-         * @public
          */
-        "inform": function (msg, callback) {
+        inform: function (msg, callback) {
             _log("inform() is executed.");
             var that = this,
                 attr;
-            attr = that._getAttrs(msg, "confirm", callback);
-            _showPanel(attr, callback);
+            attr = that._getAttrs(msg, "inform", callback);
+            _showDialog(attr, callback, "inform");
         },
         /**
-         * Hide all _panel.
-         * This method is particular designed for the 'inform' method because
-         * it has no way to close itself.
+         * Hides dialog which invoked by `alert`, `confirm`, or `inform`.
+         * It's especially useful for `inform` because user can't close
+         * an inform dialog.
          *
          * @method dismiss
-         * @param msg {String|Object}
          * @public
          */
-        "dismiss": function () {
+        dismiss: function () {
             _log("dismiss() is executed.");
-            _panel.hide();
+            _dialog.hide();
         },
         /**
          * Make a customized dialog.
@@ -385,10 +400,10 @@ YUI.add("module-dialog", function (Y) {
          *
          * @method create
          * @param attr {Object}
-         * @public
+         * @protected
          * @return {Y.Panel} The Panel instance.
          */
-        "_create": function (attr) {
+        _create: function (attr) {
             _log("create() is executed.");
             var that = this,
                 panel = new Y.Panel(attr);
@@ -484,12 +499,12 @@ YUI.add("module-dialog", function (Y) {
             return panel;
         },
         /**
-         * Make the dialog visible.
+         * Shows this module which has Y.Panel applied.
          *
          * @method show
          * @public
          */
-        "show": function () {
+        show: function () {
             var that = this,
                 panel = that.get("panel");
             if (!panel) {
@@ -499,12 +514,12 @@ YUI.add("module-dialog", function (Y) {
             panel.show();
         },
         /**
-         * Make the panel invisible.
+         * Hides this module which has Y.Panel applied.
          *
          * @method hide
          * @public
          */
-        "hide": function () {
+        hide: function () {
             var that = this,
                 panel = that.get("panel");
 
@@ -514,13 +529,15 @@ YUI.add("module-dialog", function (Y) {
             panel.hide();
         },
         /**
-         * Designated initializer.
-         * Transform module to dialog if having dialog atribute set to true.
+         * Applies Y.Panel to current module while the dialog attribute
+         * sets to true.
          *
          * @method initializer
-         * @public
+         * @protected
+         * @param config {Object} Configuration object literal for Y.Module
          */
-        "initializer": function (config) {
+        initializer: function (config) {
+
             // Don't do anything is not having dialog set to true.
             if (!config.dialog) {
                 return;
