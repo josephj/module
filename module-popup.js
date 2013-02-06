@@ -61,7 +61,7 @@ YUI.add("module-popup", function (Y) {
             xy      : [0, 0],
             zIndex  : 4
         },
-        DIALOG_CLASS = "yui3-module-popup",
+        POPUP_CLASS = "yui3-module-popup",
         MODULE_ID = "module-popup",
         WIDGET_CLASS_PREFIX = "yui3-widget-",
         //===========================
@@ -91,7 +91,7 @@ YUI.add("module-popup", function (Y) {
      * @private
      */
     _setMarkup = function (node) {
-        node.addClass(DIALOG_CLASS);
+        node.addClass(POPUP_CLASS);
         if (node.one(".hd")) {
             node.one(".hd").addClass(WIDGET_CLASS_PREFIX + "hd");
         }
@@ -127,7 +127,7 @@ YUI.add("module-popup", function (Y) {
         }
 
         _popup.setAttrs(attr);
-        _popup.get("boundingBox").addClass(DIALOG_CLASS);
+        _popup.get("boundingBox").addClass(POPUP_CLASS);
         _handler = _popup.on("autohide", function (e, callback, type) {
             if (type === "confirm") {
                 callback(false);
@@ -462,7 +462,7 @@ YUI.add("module-popup", function (Y) {
             }, attr);
 
             node = Y.Node.create(html);
-            node.addClass(DIALOG_CLASS + "-custom");
+            node.addClass(POPUP_CLASS + "-custom");
             _setMarkup(node);
             attr.boundingBox = node;
             attr.contentBox = node.one(".mod-content");
