@@ -6,19 +6,19 @@
 <!-- YUI CSS foundation -->
 <link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssreset/reset-min.css">
 <link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssfonts/fonts-min.css">
-<!-- Button skin which dialog needs -->
+<!-- Button skin which popup needs -->
 <link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0/build/cssbutton/cssbutton.css">
 <link rel="stylesheet" href="http://a.mimgs.com/lib/mui/cssbutton/assets/skins/miiicasa/cssbutton-skin.css">
 <!-- Style for this page -->
 <link rel="stylesheet" href="demo.css">
-<!-- miiiCasa dialog skin -->
+<!-- miiiCasa popup skin -->
 <link rel="stylesheet" href="panel.css">
 <!-- YUI seed file -->
 <script src="http://yui.yahooapis.com/3.6.0/build/yui/yui-min.js"></script>
 <!-- Required module core and extensions -->
 <script src="../module.js"></script>
 <script src="../module-manager.js"></script>
-<script src="../module-dialog.js"></script>
+<script src="../module-popup.js"></script>
 <script>
 // #foo (start)
 YUI.add("_foo", function (Y) {
@@ -60,7 +60,7 @@ YUI.add("_foo", function (Y) {
 }, "0.0.1", {
     "requires": [
         "module",
-        "module-dialog"
+        "module-popup"
     ]
 });
 // #foo (end)
@@ -70,7 +70,7 @@ YUI.add("_bar", function (Y) {
 
     var module = new Y.Module({
         selector: "#bar",
-        dialog: true,
+        popuped: true,
         init: function () {
             this.listen("show-dialog", function () {
                 module.show();
@@ -81,7 +81,7 @@ YUI.add("_bar", function (Y) {
 }, "0.0.1", {
     "requires": [
         "module",
-        "module-dialog"
+        "module-popup"
     ]
 });
 // #bar (end)
@@ -157,7 +157,7 @@ module.confirm(attr, function (result) {
                 <h2>#bar</h2>
             </div>
             <div class="bd">
-                <p>A module with dialog:true config attribute.</p>
+                <p>A module with popuped:true config attribute.</p>
                 <p>You can put anything here.</p>
             </div>
         </div>
