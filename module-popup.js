@@ -173,7 +173,11 @@ YUI.add("module-popup", function (Y) {
          * @readOnly
          */
         popups: {
-            value: {},
+            value: {
+                "customs" : [],   // Custom Pop-ups (createPopup)
+                "default" : null, // Default Pop-up (alert, confirm, and info)
+                "module"  : null  // Module Pop-up (popuped: true)
+            },
             readOnly: true
         },
         /**
