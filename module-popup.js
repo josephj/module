@@ -119,7 +119,6 @@ YUI.add("module-popup", function (Y) {
             _popup.plug(PanelPlugin);
             _popup.on("visibleChange", function (e) {
                 if (e.newVal === false && _handler) {
-                    console.log(e, "warn");
                     _log("_handle is detached.");
                     _handler.detach();
                 }
